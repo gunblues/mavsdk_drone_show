@@ -27,13 +27,14 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
   const handleToggle = onToggle || setLocalCollapsed;
 
   const menuItems = [
-    { to: '/', icon: FaTachometerAlt, label: 'Dashboard', category: 'main' },
+    { to: '/connected-drones', icon: FaList, label: 'Connected Drones', category: 'main' },
+    { to: '/dashboard', icon: FaTachometerAlt, label: 'Dashboard', category: 'main' },
     { to: '/mission-config', icon: FaCog, label: 'Mission Config', category: 'main' },
-    { to: '/swarm-design', icon: FaList, label: 'Swarm Design', category: 'workflow' },
+    { to: '/swarm-design', icon: FaProjectDiagram, label: 'Swarm Design', category: 'workflow' },
     { to: '/trajectory-planning', icon: FaRoute, label: 'Trajectory Planning', category: 'workflow' },
-    { to: '/swarm-trajectory', icon: FaProjectDiagram, label: 'Swarm Trajectory', category: 'workflow' },
-    { to: '/manage-drone-show', icon: FaGithub, label: 'Drone Show Design', category: 'design' },
-    { to: '/custom-show', icon: FaGem, label: 'Custom Show', category: 'design' },
+    { to: '/swarm-trajectory', icon: FaGlobe, label: 'Swarm Trajectory', category: 'workflow' },
+    { to: '/manage-drone-show', icon: FaGem, label: 'Drone Show Design', category: 'design' },
+    { to: '/custom-show', icon: FaGithub, label: 'Custom Show', category: 'design' },
     { to: '/globe-view', icon: FaGlobe, label: 'Drone 3D View', category: 'visualization' }
   ];
 

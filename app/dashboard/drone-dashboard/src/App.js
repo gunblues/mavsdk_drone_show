@@ -21,6 +21,7 @@ import './styles/DesignTokens.css';
 
 // Import pages and components
 import Overview from './pages/Overview';
+import ConnectedDrones from './pages/ConnectedDrones'; // New import
 import Detail from './components/DroneDetail';
 import SidebarMenu from './components/SidebarMenu';
 import SwarmDesign from './pages/SwarmDesign';
@@ -70,12 +71,14 @@ const App = () => {
             <Route path="/custom-show" element={<CustomShowPage />} />
             <Route path="/globe-view" element={<GlobeView />} />
             <Route path="/swarm-trajectory" element={<SwarmTrajectory />} />
+            <Route path="/connected-drones" element={<ConnectedDrones setSelectedDrone={setSelectedDrone} />} />
             
             {/* Enhanced Trajectory Planning Route with unified design system */}
             <Route path="/trajectory-planning" element={<TrajectoryPlanning />} />
             
             {/* Default route */}
-            <Route path="/" element={<Overview setSelectedDrone={setSelectedDrone} />} />
+            <Route path="/dashboard" element={<Overview />} />
+            <Route path="/" element={<ConnectedDrones setSelectedDrone={setSelectedDrone} />} />
           </Routes>
         </div>
       </div>
