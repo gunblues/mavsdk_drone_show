@@ -423,7 +423,8 @@ calculate_new_coordinates() {
 
     # Calculate new longitude based on eastward offset (OFFSET_Y)
     # Formula: Δλ = Offset_Y / M_per_degree
-    NEW_LON=$(echo "$DEFAULT_LON + ($OFFSET_Y / $M_PER_DEGREE)" | bc -l)
+    #NEW_LON=$(echo "$DEFAULT_LON + ($OFFSET_Y / $M_PER_DEGREE)" | bc -l)
+    NEW_LON=$(python3 -c "print($DEFAULT_LON + ($OFFSET_Y / $M_PER_DEGREE))")
 
     log_message "New Coordinates - Latitude: $NEW_LAT, Longitude: $NEW_LON"
 }

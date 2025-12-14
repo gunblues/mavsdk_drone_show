@@ -108,22 +108,22 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Dynamic sidebar spacing - responsive to sidebar state */
 .content.sidebar-expanded {
-  margin-left: 280px; /* Space for expanded sidebar */
+  margin-left: var(--sidebar-width-expanded);
 }
 
 .content.sidebar-collapsed {
-  margin-left: 72px; /* Space for collapsed sidebar */
+  margin-left: var(--sidebar-width-collapsed);
 }
 
 /* Responsive sidebar spacing */
 @media (max-width: 768px) {
   .content.sidebar-expanded {
-    margin-left: 72px; /* Always collapsed spacing on mobile */
+    margin-left: var(--sidebar-width-collapsed);
     padding: var(--spacing-base);
   }
 
   .content.sidebar-collapsed {
-    margin-left: 72px; /* Consistent collapsed spacing */
+    margin-left: var(--sidebar-width-collapsed);
     padding: var(--spacing-base);
   }
 }

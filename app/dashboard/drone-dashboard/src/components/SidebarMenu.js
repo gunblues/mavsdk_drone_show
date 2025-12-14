@@ -1,6 +1,6 @@
 //app/dashboard/drone-dashboard/src/components/SidebarMenu.js
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import {
   FaGlobe,
   FaTachometerAlt,
@@ -11,21 +11,15 @@ import {
   FaGithub,
   FaGem,
   FaBars,
-  FaTimes,
-  FaLinkedin,
-  FaClock,
-  FaCodeBranch
+  FaTimes
 } from 'react-icons/fa';
 import { useTheme } from '../hooks/useTheme';
-import ThemeToggle from './ThemeToggle';
 import '../styles/SidebarMenu.css';
-import CurrentTime from './CurrentTime';
-import GitInfo from './GitInfo';
-import { VERSION_DISPLAY } from '../version';
+import valtecLogo from '../assets/valtec_logo.png';
 
 const SidebarMenu = ({ collapsed, onToggle }) => {
   const { isDark } = useTheme();
-  // Use props if provided, otherwise fall back to local state for backwards compatibility
+  const location = useLocation();
   const [localCollapsed, setLocalCollapsed] = useState(window.innerWidth < 768);
   const [activeTooltip, setActiveTooltip] = useState(null);
 
@@ -50,8 +44,15 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
     }
   };
 
+  const isActive = (path) => {
+    if (path === '/') {
+      return location.pathname === '/';
+    }
+    return location.pathname.startsWith(path);
+  };
+
   return (
-    <div className={`modern-sidebar-wrapper ${isCollapsed ? 'collapsed' : 'expanded'} ${isDark ? 'dark' : 'light'}`}>
+    <div className={`valtec-sidebar ${isCollapsed ? 'collapsed' : 'expanded'} ${isDark ? 'dark' : 'light'}`}>
       {/* Toggle Button */}
       <button
         className="sidebar-toggle"
@@ -61,21 +62,24 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
         {isCollapsed ? <FaBars /> : <FaTimes />}
       </button>
 
-      {/* Header Section */}
+      {/* Header Section with Logo */}
       <div className="sidebar-header">
         {!isCollapsed ? (
           <div className="header-expanded">
             <div className="brand">
-              <span className="brand-icon">🚁</span>
+              <div className="brand-logo">
+                <img src={valtecLogo} alt="Valtec" className="logo-image" />
+              </div>
               <div className="brand-text">
-                <h3>Swarm Control</h3>
-                <span className="version">{VERSION_DISPLAY}</span>
+                <h1 className="brand-name">Valtec</h1>
               </div>
             </div>
           </div>
         ) : (
           <div className="header-collapsed">
-            <span className="brand-icon-collapsed">🚁</span>
+            <div className="brand-logo-collapsed">
+              <img src={valtecLogo} alt="Valtec" className="logo-image-collapsed" />
+            </div>
           </div>
         )}
       </div>
@@ -83,19 +87,23 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
       {/* Navigation Menu */}
       <nav className="sidebar-nav">
         <div className="nav-section">
-          {isCollapsed && <div className="section-divider"></div>}
-          {menuItems.map((item, index) => {
+          {menuItems.map((item) => {
             const IconComponent = item.icon;
+            const active = isActive(item.to);
             return (
               <Link
                 key={item.to}
                 to={item.to}
-                className={`nav-item ${isCollapsed ? 'collapsed' : ''}`}
+                className={`nav-item ${isCollapsed ? 'collapsed' : ''} ${active ? 'active' : ''}`}
                 onMouseEnter={() => handleTooltip(item.label)}
+                onMouseLeave={() => setActiveTooltip(null)}
                 data-tooltip={item.label}
               >
-                <IconComponent className="nav-icon" />
+                <div className="nav-icon-wrapper">
+                  <IconComponent className="nav-icon" />
+                </div>
                 {!isCollapsed && <span className="nav-label">{item.label}</span>}
+                {active && <div className="active-indicator" />}
 
                 {/* Tooltip for collapsed state */}
                 {isCollapsed && activeTooltip === item.label && (
@@ -107,88 +115,6 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
         </div>
       </nav>
 
-      {/* Footer Section */}
-      <div className="sidebar-footer">
-        {/* Theme Toggle */}
-        <div className="footer-item theme-toggle-container">
-          <ThemeToggle
-            variant={isCollapsed ? "simple" : "detailed"}
-            showLabel={!isCollapsed}
-            className="sidebar-theme-toggle"
-          />
-        </div>
-
-        {/* Git Info - Compact */}
-        <div className="footer-item git-info-container">
-          {!isCollapsed ? (
-            <GitInfo collapsed={false} />
-          ) : (
-            <div
-              className="git-info-icon"
-              title="Git Status"
-              onMouseEnter={() => handleTooltip('Git Status')}
-            >
-              <FaCodeBranch />
-              {activeTooltip === 'Git Status' && (
-                <div className="nav-tooltip">Git Status</div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Time Widget */}
-        <div className="footer-item time-widget">
-          {!isCollapsed ? (
-            <div className="time-display">
-              <FaClock className="time-icon" />
-              <CurrentTime />
-            </div>
-          ) : (
-            <div
-              className="time-icon-collapsed"
-              title="Current Time"
-              onMouseEnter={() => handleTooltip('Time')}
-            >
-              <FaClock />
-              {activeTooltip === 'Time' && (
-                <div className="nav-tooltip"><CurrentTime /></div>
-              )}
-            </div>
-          )}
-        </div>
-
-        {/* Social Links */}
-        <div className="footer-item social-links">
-          {!isCollapsed ? (
-            <div className="social-expanded">
-              <span className="copyright">© {new Date().getFullYear()} MDS by Alireza787b</span>
-              <div className="social-icons">
-                <a href="https://github.com/alireza787b/mavsdk_drone_show" target="_blank" rel="noopener noreferrer">
-                  <FaGithub />
-                </a>
-                <a href="https://linkedin.com/in/alireza787b" target="_blank" rel="noopener noreferrer">
-                  <FaLinkedin />
-                </a>
-              </div>
-            </div>
-          ) : (
-            <div className="social-collapsed">
-              <a
-                href="https://github.com/alireza787b/mavsdk_drone_show"
-                target="_blank"
-                rel="noopener noreferrer"
-                title="GitHub Repository"
-                onMouseEnter={() => handleTooltip('GitHub')}
-              >
-                <FaGithub />
-                {activeTooltip === 'GitHub' && (
-                  <div className="nav-tooltip">GitHub</div>
-                )}
-              </a>
-            </div>
-          )}
-        </div>
-      </div>
     </div>
   );
 }

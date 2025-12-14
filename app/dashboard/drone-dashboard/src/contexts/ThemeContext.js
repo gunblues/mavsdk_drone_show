@@ -24,14 +24,14 @@ const getSystemTheme = () => {
   if (typeof window !== 'undefined') {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? THEMES.DARK : THEMES.LIGHT;
   }
-  return THEMES.DARK; // Default fallback
+  return THEMES.LIGHT; // Default fallback
 };
 
 const getStoredTheme = () => {
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('drone-dashboard-theme') || THEMES.AUTO;
+    return localStorage.getItem('drone-dashboard-theme') || THEMES.LIGHT;
   }
-  return THEMES.AUTO;
+  return THEMES.LIGHT;
 };
 
 const setStoredTheme = (theme) => {
@@ -58,7 +58,7 @@ const applyTheme = (theme) => {
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
       metaThemeColor.setAttribute('content',
-        theme === THEMES.DARK ? '#1f2128' : '#ffffff'
+        theme === THEMES.DARK ? '#090b0f' : '#ffffff'
       );
     }
   }
