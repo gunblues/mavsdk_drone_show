@@ -431,13 +431,6 @@ const DroneReadOnlyView = memo(function DroneReadOnlyView({
         </div>
       </div>
 
-        {/* Git Info for this drone */}
-        <DroneGitStatus
-          gitStatus={gitStatus}
-          gcsGitStatus={gcsGitStatus}
-          droneName={`Drone ${drone.hw_id}`}
-        />
-
       </div>
 
       {/* Edit / Remove action buttons */}

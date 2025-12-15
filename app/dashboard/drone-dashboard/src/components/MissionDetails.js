@@ -272,7 +272,7 @@ const MissionDetails = ({
                     <strong>Origin Not Set</strong>
                     <p>
                       Origin must be configured before using auto correction mode. 
-                      <Link to="/mission-config" className="origin-link">
+                      <Link to="/connected-drones" className="origin-link">
                         Set origin in Mission Config →
                       </Link>
                     </p>

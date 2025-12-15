@@ -113,7 +113,7 @@ const DroneWidget = ({
 
   const handlePositionConfigClick = (ev) => {
     ev.stopPropagation();
-    window.location.href = '/mission-config';
+    window.location.href = '/connected-drones';
   };
 
   // Last update time formatting for live indicator

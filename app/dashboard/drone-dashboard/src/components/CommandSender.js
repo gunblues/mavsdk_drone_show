@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import MissionTrigger from './MissionTrigger';
-import DroneActions from './DroneActions';
 import { sendDroneCommand } from '../services/droneApiService';
 import { toast } from 'react-toastify';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,7 +17,7 @@ import '../styles/CommandSender.css';
 import { FIELD_NAMES } from '../constants/fieldMappings';
 
 const CommandSender = ({ drones }) => {
-  const [activeTab, setActiveTab] = useState('missionTrigger');
+
   const [targetMode, setTargetMode] = useState('all'); // 'all' or 'selected'
   const [selectedDrones, setSelectedDrones] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
@@ -26,7 +25,7 @@ const CommandSender = ({ drones }) => {
   const [confirmationMessage, setConfirmationMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Handle new command from child components (MissionTrigger/DroneActions)
+  // Handle new command from child components (MissionTrigger)
   const handleSendCommand = (commandData) => {
     let targetDronesList = 'All Drones';
     if (targetMode === 'selected') {
@@ -99,80 +98,12 @@ const CommandSender = ({ drones }) => {
 
   return (
     <div className="command-sender-container">
-      <h2 className="command-sender-header">Command Control</h2>
-
-      {/* Target Selection UI */}
-      <div className="target-selection">
-        <label htmlFor="targetMode" style={{ marginRight: '10px' }}>Command Target:</label>
-        <select
-          id="targetMode"
-          value={targetMode}
-          onChange={(e) => setTargetMode(e.target.value)}
-        >
-          <option value="all">All Drones</option>
-          <option value="selected">Select Drones</option>
-        </select>
-
-        {targetMode === 'selected' && (
-          <div className="drone-selection">
-            <div className="selection-buttons">
-              <button onClick={selectAllDrones}>Select All</button>
-              <button onClick={deselectAllDrones}>Deselect All</button>
-            </div>
-            <div className="drone-grid">
-              {drones.map((drone) => (
-                <div
-                  key={drone[FIELD_NAMES.HW_ID]}
-                  className={`drone-item ${
-                    selectedDrones.includes(drone[FIELD_NAMES.HW_ID]) ? 'selected' : ''
-                  }`}
-                  onClick={() => toggleDroneSelection(drone[FIELD_NAMES.HW_ID])}
-                >
-                  {drone[FIELD_NAMES.HW_ID]}
-                </div>
-              ))}
-            </div>
-            <div className="selected-count">
-              Selected Drones: {selectedDrones.length}
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Tab Navigation with Expert UI/UX Icons */}
-      <div className="tab-bar">
-        <button
-          className={`tab-button ${activeTab === 'missionTrigger' ? 'active' : ''}`}
-          onClick={() => setActiveTab('missionTrigger')}
-          title="Mission Trigger - Schedule and execute complex mission operations"
-        >
-          <FontAwesomeIcon icon={faRocket} className="tab-icon" />
-          <span className="tab-text">Mission Trigger</span>
-        </button>
-        <button
-          className={`tab-button ${activeTab === 'actions' ? 'active' : ''}`}
-          onClick={() => setActiveTab('actions')}
-          title="Actions - Execute immediate flight control and system commands"
-        >
-          <FontAwesomeIcon icon={faCog} className="tab-icon" />
-          <span className="tab-text">Actions</span>
-        </button>
-      </div>
-
       {/* Tab Content */}
       <div className="tab-content">
-        {activeTab === 'missionTrigger' && (
-          <MissionTrigger
+        <MissionTrigger
             missionTypes={DRONE_MISSION_TYPES}
             onSendCommand={handleSendCommand}
-          />
-        )}
-        {activeTab === 'actions' && (
-          <DroneActions
-            actionTypes={DRONE_ACTION_TYPES}
-            onSendCommand={handleSendCommand}
-          />
-        )}
+        />
       </div>
 
       {/* Confirmation Modal - Rendered via Portal for proper viewport centering */}
