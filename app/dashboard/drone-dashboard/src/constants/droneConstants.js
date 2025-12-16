@@ -9,11 +9,19 @@ export const DRONE_MISSION_TYPES = {
     SWARM_TRAJECTORY: 4,
 };
 
+export const DRONE_MISSION_ICONS = {
+    [DRONE_MISSION_TYPES.DRONE_SHOW_FROM_CSV]: '📝', // Show from CSV
+    [DRONE_MISSION_TYPES.CUSTOM_CSV_DRONE_SHOW]: '✨', // Custom CSV Show
+    [DRONE_MISSION_TYPES.SMART_SWARM]: '🐝', // Smart Swarm
+    [DRONE_MISSION_TYPES.SWARM_TRAJECTORY]: '🗺️', // Swarm Trajectory
+    [DRONE_MISSION_TYPES.NONE]: '❌', // Cancel Mission
+};
+
 // Define mission display order for better UX (Cancel last as requested)
 export const DRONE_MISSION_DISPLAY_ORDER = [
     { key: 'DRONE_SHOW_FROM_CSV', value: DRONE_MISSION_TYPES.DRONE_SHOW_FROM_CSV },
     { key: 'CUSTOM_CSV_DRONE_SHOW', value: DRONE_MISSION_TYPES.CUSTOM_CSV_DRONE_SHOW },
-    //{ key: 'SMART_SWARM', value: DRONE_MISSION_TYPES.SMART_SWARM },
+    { key: 'SMART_SWARM', value: DRONE_MISSION_TYPES.SMART_SWARM },
     { key: 'SWARM_TRAJECTORY', value: DRONE_MISSION_TYPES.SWARM_TRAJECTORY },
     { key: 'NONE', value: DRONE_MISSION_TYPES.NONE }, // Cancel last for safety
 ];

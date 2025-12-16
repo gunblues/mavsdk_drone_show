@@ -46,7 +46,8 @@ def export_and_plot_shape(output_file):
     ax.legend(loc='best')
 
     # Save the figure before showing it
-    plt.savefig('shapes/trajectory_plot.png', dpi=80, bbox_inches='tight', optimize=True)
+    #plt.savefig('shapes/trajectory_plot.png', dpi=80, bbox_inches='tight', optimize=True)
+    plt.savefig('shapes/trajectory_plot.png', dpi=80, bbox_inches='tight')
 
     # Then show the plot
     plt.show()

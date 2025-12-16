@@ -13,6 +13,7 @@ import {
   FaBars,
   FaTimes,
   FaTelegramPlane,
+  FaPenSquare,
 } from 'react-icons/fa';
 import { useTheme } from '../hooks/useTheme';
 import '../styles/SidebarMenu.css';
@@ -34,7 +35,7 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
     { to: '/swarm-trajectory', icon: FaGlobe, label: 'Swarm Trajectory', category: 'workflow' },
     //{ to: '/trajectory-planning', icon: FaRoute, label: 'Trajectory Planning', category: 'workflow' },
     //{ to: '/manage-drone-show', icon: FaGem, label: 'Drone Show Design', category: 'design' },
-    { to: '/custom-show', icon: FaGithub, label: 'Custom Show', category: 'design' },
+    { to: '/custom-show', icon: FaPenSquare, label: 'Custom Show', category: 'design' },
     //{ to: '/globe-view', icon: FaGlobe, label: 'Drone 3D View', category: 'visualization' }
   ];
 
@@ -72,7 +73,7 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
                 <img src={valtecLogo} alt="Valtec" className="logo-image" />
               </div>
               <div className="brand-text">
-                <h1 className="brand-name">Valtec</h1>
+                <h1 className="brand-name">MARLIN</h1>
               </div>
             </div>
           </div>
