@@ -150,12 +150,12 @@
 
 /* Drone Grid with Dynamic Layout */
 .drone-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--spacing-base);
     padding: 0;
     margin: 0;
-    align-items: start;
+    align-items: stretch; /* Stretch items to fill the container height */
     transition: var(--transition-all);
 }
 
@@ -291,64 +291,62 @@
     }
 }
 
+/* Tabs styles */
+.tabs-container {
+    display: flex;
+    justify-content: flex-start; /* Align tabs to the start */
+    border-bottom: 2px solid var(--color-border-primary);
+    margin-bottom: var(--spacing-lg);
+    padding: 0 var(--spacing-md); /* Add some horizontal padding */
+    gap: var(--spacing-sm); /* Space between tabs */
+}
+
+.tab-item {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    cursor: pointer;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-secondary);
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: var(--border-radius-base) var(--border-radius-base) 0 0;
+    transition: all 0.3s ease;
+    background: var(--color-bg-secondary); /* Default background for inactive tabs */
+    position: relative;
+    top: 2px; /* Slight lift to differentiate from border */
+    display: flex;
+    align-items: center;
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.tab-item:hover {
+    color: var(--color-primary);
+    background: var(--color-bg-tertiary);
+}
+
+.tab-item.active {
+    color: var(--color-primary);
+    background: var(--color-bg-primary); /* Active tab background */
+    border-color: var(--color-border-primary);
+    border-bottom-color: var(--color-bg-primary); /* Hide bottom border to merge with content */
+    z-index: 1; /* Ensure active tab is on top */
+}
+
+.tab-label {
+    font-size: var(--font-size-base);
+}
+
+
 /* Responsive Design */
 @media (max-width: 1200px) {
     .drone-list {
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
         gap: var(--spacing-sm);
-    }
-
-
-    .mission-control {
-        flex-direction: column;
-        gap: var(--spacing-sm);
-    }
-
-    .overview-container {
-        padding: var(--spacing-base);
     }
 }
 
 @media (max-width: 768px) {
     .drone-list {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: var(--spacing-sm);
-    }
-
-
-    .drone-widget.expanded {
-        transform: scale(1);
-        margin: var(--spacing-xs) 0;
-    }
-
-    .overview-container {
-        padding: var(--spacing-sm);
-    }
-
-    .connected-drones-header {
-        font-size: var(--font-size-xl);
-        padding: var(--spacing-base);
-    }
-
-    .mission-trigger-section {
-        padding: var(--spacing-base);
-        margin-bottom: var(--spacing-lg);
-    }
-
-    .mission-control {
-        gap: var(--spacing-xs);
-    }
-
-    .mission-button {
-        width: 100%;
-        margin: var(--spacing-xs) 0;
-    }
-
-    .notification,
-    .confirmation-toast {
-        left: var(--spacing-sm);
-        right: var(--spacing-sm);
-        transform: none;
     }
 }
 

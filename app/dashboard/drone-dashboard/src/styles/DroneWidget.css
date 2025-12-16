@@ -1,143 +1,120 @@
-/* Valtec Drone Widget - Clean & Minimal */
+/* Valtec Drone Widget - Clean & Horizontal */
 @import './DesignTokens.css';
 
 .drone-widget {
     background: var(--color-bg-secondary);
     border: 1px solid var(--color-border-primary);
     border-radius: var(--border-radius-md);
-    padding: var(--spacing-4);
-    min-height: 180px;
-    max-width: 380px;
-    width: 100%;
+    padding: var(--spacing-3);
+    flex: 1 1 auto; /* Allow the widget to grow and shrink */
     position: relative;
     transition: var(--transition-base);
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Horizontal layout */
+    align-items: center; /* Center items vertically */
+    justify-content: space-between; /* Space out sections */
+    gap: var(--spacing-3);
 }
 
 .drone-widget:hover {
     border-color: var(--color-border-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* State Indicators */
-.drone-widget.ready-to-arm {
-    border-left: 3px solid var(--color-success);
+/* Header Section */
+.drone-header-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-2);
+    flex-shrink: 0;
+    width: 140px; /* Fixed width for alignment */
 }
 
-.drone-widget.not-ready-to-arm {
-    border-left: 3px solid var(--color-danger);
-}
-
-.drone-widget.armed {
-    border-top: 2px solid var(--color-primary);
-}
-
-.drone-widget.disarmed {
-    border-top: 2px solid var(--color-border-secondary);
-}
-
-.drone-widget.mission-ready {
-    border-right: 2px solid var(--color-warning);
-}
-
-.drone-widget.mission-executing {
-    border-right: 2px solid var(--color-info);
-}
-
-.drone-widget.expanded {
-    border-color: var(--color-primary);
-}
-
-/* Header */
 .drone-widget h3 {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin: 0 0 var(--spacing-3) 0;
-    padding: 0 0 var(--spacing-2) 0;
-    border-bottom: 1px solid var(--color-border-primary);
-    font-size: var(--font-size-md);
-    font-weight: var(--font-weight-semibold);
+    gap: var(--spacing-2);
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
     color: var(--color-text-primary);
     cursor: pointer;
-    font-family: var(--font-family-display);
 }
 
 .drone-widget h3:hover {
     color: var(--color-primary);
 }
 
-.drone-header {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-2);
-}
-
-/* Status Indicator */
 .status-indicator {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
     border-radius: var(--border-radius-full);
     flex-shrink: 0;
 }
 
-.status-indicator.active {
-    background: var(--color-success);
-}
+.status-indicator.active { background: var(--color-success); }
+.status-indicator.stale { background: var(--color-danger); }
 
-.status-indicator.stale {
-    background: var(--color-danger);
-}
-
-/* Critical Status */
+/* Critical Status Badges */
 .critical-status {
     display: flex;
+    flex-direction: column; /* Stack badges vertically */
     gap: var(--spacing-1);
-    margin-bottom: var(--spacing-3);
-    flex-wrap: wrap;
+    align-items: flex-start;
 }
 
 .status-badge {
-    padding: var(--spacing-1) var(--spacing-2);
+    padding: 3px var(--spacing-2);
     border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
+    font-size: 10px; /* Smaller font for compactness */
+    font-weight: var(--font-weight-bold);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     border: 1px solid transparent;
+    text-align: center;
+    width: 90px; /* Fixed width */
 }
 
-.status-badge.armed {
-    background: var(--color-primary-light);
-    color: var(--color-primary);
-    border-color: var(--color-primary-border);
-}
+.status-badge.armed { background: var(--color-primary-light); color: var(--color-primary); border-color: var(--color-primary-border); }
+.status-badge.disarmed { background: var(--color-bg-tertiary); color: var(--color-text-secondary); border-color: var(--color-border-primary); }
+.status-badge.ready { background: var(--color-success-light); color: var(--color-success); border-color: var(--color-success-border); }
+.status-badge.not-ready { background: var(--color-danger-light); color: var(--color-danger); border-color: var(--color-danger-border); }
 
-.status-badge.disarmed {
-    background: var(--color-bg-tertiary);
-    color: var(--color-text-secondary);
-    border-color: var(--color-border-primary);
-}
-
-.status-badge.ready {
-    background: var(--color-success-light);
-    color: var(--color-success);
-    border-color: var(--color-success-border);
-}
-
-.status-badge.not-ready {
-    background: var(--color-danger-light);
-    color: var(--color-danger);
-    border-color: var(--color-danger-border);
-}
-
-/* Data Grid */
-.drone-data-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+/* Main Data Section */
+.drone-main-data {
+    display: flex;
+    flex-direction: column;
     gap: var(--spacing-2);
-    margin-bottom: var(--spacing-3);
-    flex: 1;
+    flex-grow: 1; /* Take up available space */
+}
+
+/* Position Section */
+.position-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-bg-tertiary);
+    border: 1px solid var(--color-border-primary);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: var(--font-size-sm);
+}
+
+.position-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+/* Data Grid - now a flex container */
+.drone-data-grid {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap */
+    gap: var(--spacing-2);
 }
 
 .data-item {
@@ -147,10 +124,8 @@
     padding: var(--spacing-2);
     background: var(--color-bg-tertiary);
     border-radius: var(--border-radius-sm);
-}
-
-.data-item.full-width {
-    grid-column: 1 / -1;
+    flex: 1 1 120px; /* Flex properties for responsive items */
+    min-width: 120px; /* Minimum width for each item */
 }
 
 .data-label {
@@ -172,93 +147,54 @@
 .data-value.warning { color: var(--color-warning); }
 .data-value.critical { color: var(--color-danger); }
 
-/* Position Section */
-.position-section {
-    grid-column: 1 / -1;
-    background: var(--color-bg-tertiary);
-    border: 1px solid var(--color-border-primary);
-    border-radius: var(--border-radius-sm);
-    padding: var(--spacing-2);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: var(--font-size-sm);
-    margin-bottom: var(--spacing-2);
-}
-
-.position-info {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-2);
-    color: var(--color-text-primary);
-    font-weight: var(--font-weight-medium);
-}
-
-/* Mode Badges */
-.mode-badge {
-    padding: var(--spacing-1) var(--spacing-2);
+/* Mode & Mission Badges */
+.mode-badge, .mission-badge, .mission-state-badge {
+    padding: 3px var(--spacing-2);
     border-radius: var(--border-radius-sm);
     font-size: var(--font-size-xs);
     font-weight: var(--font-weight-semibold);
     text-transform: uppercase;
     border: 1px solid;
+    text-align: center;
 }
 
-.mode-badge.manual {
-    background: var(--color-info-light);
-    color: var(--color-info);
-    border-color: var(--color-info-border);
+/* Action Section */
+.drone-action-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-2);
+    flex-shrink: 0;
+    border-left: 1px solid var(--color-border-primary);
+    padding-left: var(--spacing-3);
 }
 
-.mode-badge.auto {
-    background: var(--color-success-light);
-    color: var(--color-success);
-    border-color: var(--color-success-border);
-}
-
-.mode-badge.offboard {
-    background: var(--color-warning-light);
-    color: var(--color-warning);
-    border-color: var(--color-warning-border);
-}
-
-.mode-badge.unknown {
-    background: var(--color-bg-tertiary);
+/* Last Update Info */
+.last-update {
+    font-size: var(--font-size-xs);
     color: var(--color-text-tertiary);
-    border-color: var(--color-border-primary);
+    text-align: center;
 }
 
-/* Mission Badges */
-.mission-badge {
-    padding: var(--spacing-1) var(--spacing-2);
-    border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-xs);
+.update-time {
     font-weight: var(--font-weight-medium);
-    color: white;
+    color: var(--color-text-secondary);
 }
 
-.mission-badge.mission-none { background: var(--color-text-tertiary); }
-.mission-badge.mission-performance { background: #8b5cf6; }
-.mission-badge.mission-flight { background: var(--color-info); }
-.mission-badge.mission-test { background: var(--color-warning); color: var(--color-text-inverse); }
-.mission-badge.mission-system { background: var(--color-info); }
-.mission-badge.mission-emergency { background: var(--color-danger); }
-.mission-badge.mission-default { background: var(--color-success); }
-
-.mission-state-badge {
-    padding: var(--spacing-1) var(--spacing-2);
-    border-radius: var(--border-radius-sm);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-medium);
-    color: white;
-    text-transform: capitalize;
+.drone-ip {
+    font-family: var(--font-family-mono);
+    color: var(--color-primary);
 }
 
-.mission-state-badge.idle { background: var(--color-text-tertiary); }
-.mission-state-badge.ready { background: var(--color-warning); }
-.mission-state-badge.executing { background: var(--color-info); }
+/* Commands */
+.drone-critical-commands-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    align-items: center;
+}
 
-/* GPS Status */
+/* GPS & Satellites */
 .gps-status {
     display: flex;
     align-items: center;
@@ -270,83 +206,37 @@
     height: 6px;
     border-radius: var(--border-radius-full);
 }
-
 .gps-fix-indicator.no-fix { background: var(--color-danger); }
 .gps-fix-indicator.fix-2d { background: var(--color-warning); }
 .gps-fix-indicator.fix-3d { background: var(--color-success); }
 .gps-fix-indicator.dgps { background: var(--color-info); }
 .gps-fix-indicator.rtk { background: #8b5cf6; }
 
-/* Last Update */
-.last-update {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-tertiary);
-    margin-top: auto;
-    padding-top: var(--spacing-2);
-    border-top: 1px solid var(--color-border-primary);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
-.update-time {
-    font-weight: var(--font-weight-medium);
-    color: var(--color-text-secondary);
-}
-
-.drone-ip {
-    font-family: var(--font-family-mono);
-    font-size: var(--font-size-xs);
-    color: var(--color-primary);
-    background: var(--color-primary-light);
-    padding: 2px var(--spacing-2);
-    border-radius: var(--border-radius-sm);
-    border: 1px solid var(--color-primary-border);
-}
-
-/* Commands Section */
-.drone-critical-commands-section {
-    margin-top: var(--spacing-2);
-    padding-top: var(--spacing-2);
-    border-top: 1px solid var(--color-border-primary);
-    display: flex;
-    justify-content: center;
-    gap: var(--spacing-2);
-}
-
-/* Details Content */
-.details-content {
-    margin-top: var(--spacing-4);
-    padding: var(--spacing-4);
-    border-top: 1px solid var(--color-border-primary);
-    background: var(--color-bg-tertiary);
-    border-radius: var(--border-radius-sm);
-    margin: var(--spacing-4) calc(-1 * var(--spacing-4)) calc(-1 * var(--spacing-4));
-}
-
-/* Position Icons */
-.posid-warning-icon { color: var(--color-warning); }
-.posid-match-icon { color: var(--color-success); }
-.posid-info-icon { color: var(--color-text-tertiary); }
-
-/* Responsive */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .drone-widget {
+        flex-direction: column;
+        align-items: stretch;
         max-width: 100%;
-        padding: var(--spacing-3);
     }
 
-    .drone-data-grid {
-        grid-template-columns: 1fr;
+    .drone-header-section {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
 
-    .data-item.full-width {
-        grid-column: 1;
+    .critical-status {
+        flex-direction: row;
     }
-}
 
-@media (max-width: 480px) {
-    .drone-widget {
-        min-height: 150px;
+    .drone-action-section {
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px solid var(--color-border-primary);
+        padding-top: var(--spacing-3);
+        margin-top: var(--spacing-2);
     }
 }

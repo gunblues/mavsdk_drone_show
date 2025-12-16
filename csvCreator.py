@@ -80,7 +80,7 @@ from functions.create_active_csv import create_active_csv
 # Example usage
 
 num_repeats = 1
-shape_name="heart_shape"
+shape_name="eight_shape"
 diameter = 30.0
 direction = 1
 maneuver_time = 60.0

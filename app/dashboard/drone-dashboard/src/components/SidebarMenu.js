@@ -11,7 +11,9 @@ import {
   FaGithub,
   FaGem,
   FaBars,
-  FaTimes
+  FaTimes,
+  FaTelegramPlane,
+  FaPenSquare,
 } from 'react-icons/fa';
 import { useTheme } from '../hooks/useTheme';
 import '../styles/SidebarMenu.css';
@@ -27,14 +29,14 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
   const handleToggle = onToggle || setLocalCollapsed;
 
   const menuItems = [
-    { to: '/', icon: FaTachometerAlt, label: 'Dashboard', category: 'main' },
-    { to: '/mission-config', icon: FaCog, label: 'Mission Config', category: 'main' },
-    { to: '/swarm-design', icon: FaList, label: 'Swarm Design', category: 'workflow' },
-    { to: '/trajectory-planning', icon: FaRoute, label: 'Trajectory Planning', category: 'workflow' },
-    { to: '/swarm-trajectory', icon: FaProjectDiagram, label: 'Swarm Trajectory', category: 'workflow' },
-    { to: '/manage-drone-show', icon: FaGithub, label: 'Drone Show Design', category: 'design' },
-    { to: '/custom-show', icon: FaGem, label: 'Custom Show', category: 'design' },
-    { to: '/globe-view', icon: FaGlobe, label: 'Drone 3D View', category: 'visualization' }
+    { to: '/connected-drones', icon: FaTelegramPlane, label: 'Drones', category: 'main' },
+    { to: '/dashboard', icon: FaTachometerAlt, label: 'Missions', category: 'main' },
+    { to: '/swarm-design', icon: FaProjectDiagram, label: 'Swarm Design', category: 'workflow' },
+    { to: '/swarm-trajectory', icon: FaGlobe, label: 'Swarm Trajectory', category: 'workflow' },
+    //{ to: '/trajectory-planning', icon: FaRoute, label: 'Trajectory Planning', category: 'workflow' },
+    //{ to: '/manage-drone-show', icon: FaGem, label: 'Drone Show Design', category: 'design' },
+    //{ to: '/custom-show', icon: FaPenSquare, label: 'Custom Show', category: 'design' },
+    //{ to: '/globe-view', icon: FaGlobe, label: 'Drone 3D View', category: 'visualization' }
   ];
 
   const handleTooltip = (label) => {
@@ -71,7 +73,7 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
                 <img src={valtecLogo} alt="Valtec" className="logo-image" />
               </div>
               <div className="brand-text">
-                <h1 className="brand-name">Valtec</h1>
+                <h1 className="brand-name">MARLIN</h1>
               </div>
             </div>
           </div>

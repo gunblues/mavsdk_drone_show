@@ -1,5 +1,9 @@
 @import './DesignTokens.css';
 
+.hidden {
+    display: none !important;
+}
+
 /* Control Buttons Container */
 .control-buttons {
     display: grid;

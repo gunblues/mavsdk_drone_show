@@ -5,15 +5,23 @@ export const DRONE_MISSION_TYPES = {
     NONE: 0,
     DRONE_SHOW_FROM_CSV: 1,
     SMART_SWARM: 2,
-    CUSTOM_CSV_DRONE_SHOW: 3,
+    CUSTOM_CSV_DRONE_TRAJECTORY: 3,
     SWARM_TRAJECTORY: 4,
+};
+
+export const DRONE_MISSION_ICONS = {
+    [DRONE_MISSION_TYPES.DRONE_SHOW_FROM_CSV]: '📝', // Show from CSV
+    [DRONE_MISSION_TYPES.CUSTOM_CSV_DRONE_TRAJECTORY]: '✨', // Custom CSV Show
+    [DRONE_MISSION_TYPES.SMART_SWARM]: '🐝', // Smart Swarm
+    [DRONE_MISSION_TYPES.SWARM_TRAJECTORY]: '🗺️', // Swarm Trajectory
+    [DRONE_MISSION_TYPES.NONE]: '❌', // Cancel Mission
 };
 
 // Define mission display order for better UX (Cancel last as requested)
 export const DRONE_MISSION_DISPLAY_ORDER = [
     { key: 'DRONE_SHOW_FROM_CSV', value: DRONE_MISSION_TYPES.DRONE_SHOW_FROM_CSV },
-    { key: 'CUSTOM_CSV_DRONE_SHOW', value: DRONE_MISSION_TYPES.CUSTOM_CSV_DRONE_SHOW },
-    { key: 'SMART_SWARM', value: DRONE_MISSION_TYPES.SMART_SWARM },
+    { key: 'CUSTOM_CSV_DRONE_TRAJECTORY', value: DRONE_MISSION_TYPES.CUSTOM_CSV_DRONE_TRAJECTORY },
+    //{ key: 'SMART_SWARM', value: DRONE_MISSION_TYPES.SMART_SWARM },
     { key: 'SWARM_TRAJECTORY', value: DRONE_MISSION_TYPES.SWARM_TRAJECTORY },
     { key: 'NONE', value: DRONE_MISSION_TYPES.NONE }, // Cancel last for safety
 ];
@@ -37,14 +45,14 @@ export const DRONE_ACTION_TYPES = {
 
 export const DRONE_MISSION_IMAGES = {
     [DRONE_MISSION_TYPES.DRONE_SHOW_FROM_CSV]: `${getBackendURL()}/get-show-plots/combined_drone_paths.jpg`,
-    [DRONE_MISSION_TYPES.CUSTOM_CSV_DRONE_SHOW]: `${getCustomShowImageURL()}`, // Use the function to get the custom show image URL
+    [DRONE_MISSION_TYPES.CUSTOM_CSV_DRONE_TRAJECTORY]: `${getCustomShowImageURL()}`, // Use the function to get the custom show image URL
 };
 
 export const DRONE_MISSION_NAMES = {
     0: 'Cancel Mission',
     1: 'Drone Show from CSV',
     2: 'Smart Swarm',
-    3: 'Custom CSV Drone Show',
+    3: 'Custom CSV Drone Trajectory',
     4: 'Swarm Trajectory',
 };
 
@@ -69,7 +77,7 @@ export const getMissionDescription = (missionType) => {
     switch (missionType) {
         case DRONE_MISSION_TYPES.DRONE_SHOW_FROM_CSV:
             return 'Executes a fully synchronized drone show using pre-processed Skybrush CSV data. This mission coordinates multiple drones autonomously, leveraging MAVSDK to maintain precision in complex aerial maneuvers.';
-        case DRONE_MISSION_TYPES.CUSTOM_CSV_DRONE_SHOW:
+        case DRONE_MISSION_TYPES.CUSTOM_CSV_DRONE_TRAJECTORY:
             return 'Initiates a custom drone show sequence from a user-defined CSV file. This mission allows for flexibility in the drone choreography, utilizing MAVSDK for offboard control to follow intricate trajectories specified in the CSV.';
         case DRONE_MISSION_TYPES.SMART_SWARM:
             return 'Implements a smart swarm formation with leader-follower dynamics. This mission is designed for scenarios requiring coordinated movements across multiple drones, where MAVSDK ensures seamless communication and control within the swarm (currently in development).';

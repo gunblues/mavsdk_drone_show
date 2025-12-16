@@ -158,11 +158,6 @@ const MissionDetails = ({
 
   return (
     <div className="mission-details">
-      <div className="selected-mission-card">
-        <div className="mission-icon">{icon}</div>
-        <div className="mission-name">{label}</div>
-        <div className="mission-description">{description}</div>
-      </div>
 
       {/* Display mission-specific image */}
       {missionImageSrc && (
@@ -272,7 +267,7 @@ const MissionDetails = ({
                     <strong>Origin Not Set</strong>
                     <p>
                       Origin must be configured before using auto correction mode. 
-                      <Link to="/mission-config" className="origin-link">
+                      <Link to="/connected-drones" className="origin-link">
                         Set origin in Mission Config →
                       </Link>
                     </p>

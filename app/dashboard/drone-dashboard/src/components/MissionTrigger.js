@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import MissionCard from './MissionCard';
 import MissionDetails from './MissionDetails';
 import MissionNotification from './MissionNotification';
-import { DRONE_MISSION_TYPES, DRONE_MISSION_DISPLAY_ORDER, defaultTriggerTimeDelay, getMissionDescription } from '../constants/droneConstants';
+import { DRONE_MISSION_TYPES, DRONE_MISSION_DISPLAY_ORDER, defaultTriggerTimeDelay, getMissionDescription, DRONE_MISSION_ICONS } from '../constants/droneConstants';
 import '../styles/MissionTrigger.css';
 
 const MissionTrigger = ({ missionTypes, onSendCommand }) => {
@@ -82,17 +82,7 @@ const MissionTrigger = ({ missionTypes, onSendCommand }) => {
             <MissionCard
               key={mission.value}
               missionType={mission.value}
-              icon={
-                mission.value === DRONE_MISSION_TYPES.DRONE_SHOW_FROM_CSV
-                  ? '🛸'
-                  : mission.value === DRONE_MISSION_TYPES.CUSTOM_CSV_DRONE_SHOW
-                  ? '🎯'
-                  : mission.value === DRONE_MISSION_TYPES.SMART_SWARM
-                  ? '🐝🐝🐝'
-                  : mission.value === DRONE_MISSION_TYPES.SWARM_TRAJECTORY
-                  ? '🚀🛸🚀'
-                  : '🚫'
-              }
+              icon={DRONE_MISSION_ICONS[mission.value]}
               label={mission.key === 'NONE' ? 'Cancel Mission' : mission.key.replace(/_/g, ' ')}
               onClick={() => handleMissionSelect(mission.value)}
               isCancel={mission.value === DRONE_MISSION_TYPES.NONE}
@@ -104,17 +94,7 @@ const MissionTrigger = ({ missionTypes, onSendCommand }) => {
       {selectedMission && selectedMission !== DRONE_MISSION_TYPES.NONE && (
         <MissionDetails
           missionType={selectedMission}
-          icon={
-            selectedMission === DRONE_MISSION_TYPES.DRONE_SHOW_FROM_CSV
-              ? '🛸'
-              : selectedMission === DRONE_MISSION_TYPES.CUSTOM_CSV_DRONE_SHOW
-              ? '🎯'
-              : selectedMission === DRONE_MISSION_TYPES.SMART_SWARM
-              ? '🐝🐝🐝'
-              : selectedMission === DRONE_MISSION_TYPES.SWARM_TRAJECTORY
-              ? '🚀🛸🚀'
-              : '❓'
-          }
+          icon={DRONE_MISSION_ICONS[selectedMission]}
           label={Object.keys(missionTypes)
             .find((key) => missionTypes[key] === selectedMission)
             .replace(/_/g, ' ')}

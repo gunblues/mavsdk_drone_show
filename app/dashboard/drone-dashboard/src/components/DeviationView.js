@@ -33,6 +33,8 @@ const DeviationView = ({
   const [showActualPositions, setShowActualPositions] = useState(true);
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [lastUpdate, setLastUpdate] = useState(new Date());
+  const [showDeviationControls, setShowDeviationControls] = useState(false);
+  const [showInfoBanner, setShowInfoBanner] = useState(false);
 
   // Theme-aware colors
   const themeColors = {
@@ -236,48 +238,52 @@ const DeviationView = ({
   return (
     <div className="deviation-view">
       {/* Controls */}
-      <div className="deviation-controls">
-        <label className="auto-refresh-toggle">
-          <input
-            type="checkbox"
-            checked={showActualPositions}
-            onChange={(e) => setShowActualPositions(e.target.checked)}
-          />
-          <span>Show Actual Positions & Deviations</span>
-        </label>
+      {showDeviationControls && (
+        <div className="deviation-controls">
+          <label className="auto-refresh-toggle">
+            <input
+              type="checkbox"
+              checked={showActualPositions}
+              onChange={(e) => setShowActualPositions(e.target.checked)}
+            />
+            <span>Show Actual Positions & Deviations</span>
+          </label>
 
-        {showActualPositions && (
-          <>
-            <label className="auto-refresh-toggle">
-              <input
-                type="checkbox"
-                checked={autoRefresh}
-                onChange={(e) => setAutoRefresh(e.target.checked)}
-              />
-              <span>Auto-refresh (5s)</span>
-              {autoRefresh && <span className="refresh-indicator">●</span>}
-            </label>
+          {showActualPositions && (
+            <>
+              <label className="auto-refresh-toggle">
+                <input
+                  type="checkbox"
+                  checked={autoRefresh}
+                  onChange={(e) => setAutoRefresh(e.target.checked)}
+                />
+                <span>Auto-refresh (5s)</span>
+                {autoRefresh && <span className="refresh-indicator">●</span>}
+              </label>
 
-            <button
-              className="manual-refresh-btn"
-              onClick={() => {
-                if (onRefresh) {
-                  onRefresh();
-                  setLastUpdate(new Date());
-                }
-              }}
-              disabled={!onRefresh}
-            >
-              🔄 Refresh Now
-            </button>
-          </>
-        )}
-      </div>
+              <button
+                className="manual-refresh-btn"
+                onClick={() => {
+                  if (onRefresh) {
+                    onRefresh();
+                    setLastUpdate(new Date());
+                  }
+                }}
+                disabled={!onRefresh}
+              >
+                🔄 Refresh Now
+              </button>
+            </>
+          )}
+        </div>
+      )}
 
       {/* Info Banner */}
-      <div className="info-banner">
-        📍 Positions from trajectory CSV files (single source of truth)
-      </div>
+      {showInfoBanner && (
+        <div className="info-banner">
+          📍 Positions from trajectory CSV files (single source of truth)
+        </div>
+      )}
 
       {/* Summary Statistics Header (only when showing actual positions) */}
       {showActualPositions && (
