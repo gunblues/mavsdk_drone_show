@@ -158,11 +158,6 @@ const MissionDetails = ({
 
   return (
     <div className="mission-details">
-      <div className="selected-mission-card">
-        <div className="mission-icon">{icon}</div>
-        <div className="mission-name">{label}</div>
-        <div className="mission-description">{description}</div>
-      </div>
 
       {/* Display mission-specific image */}
       {missionImageSrc && (
