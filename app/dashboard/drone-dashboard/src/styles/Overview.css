@@ -150,12 +150,12 @@
 
 /* Drone Grid with Dynamic Layout */
 .drone-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--spacing-base);
     padding: 0;
     margin: 0;
-    align-items: start;
+    align-items: stretch; /* Stretch items to fill the container height */
     transition: var(--transition-all);
 }
 
@@ -339,61 +339,14 @@
 /* Responsive Design */
 @media (max-width: 1200px) {
     .drone-list {
-        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
         gap: var(--spacing-sm);
-    }
-
-
-    .mission-control {
-        flex-direction: column;
-        gap: var(--spacing-sm);
-    }
-
-    .overview-container {
-        padding: var(--spacing-base);
     }
 }
 
 @media (max-width: 768px) {
     .drone-list {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: var(--spacing-sm);
-    }
-
-
-    .drone-widget.expanded {
-        transform: scale(1);
-        margin: var(--spacing-xs) 0;
-    }
-
-    .overview-container {
-        padding: var(--spacing-sm);
-    }
-
-    .connected-drones-header {
-        font-size: var(--font-size-xl);
-        padding: var(--spacing-base);
-    }
-
-    .mission-trigger-section {
-        padding: var(--spacing-base);
-        margin-bottom: var(--spacing-lg);
-    }
-
-    .mission-control {
-        gap: var(--spacing-xs);
-    }
-
-    .mission-button {
-        width: 100%;
-        margin: var(--spacing-xs) 0;
-    }
-
-    .notification,
-    .confirmation-toast {
-        left: var(--spacing-sm);
-        right: var(--spacing-sm);
-        transform: none;
     }
 }
 

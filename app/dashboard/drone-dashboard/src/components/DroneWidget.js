@@ -144,159 +144,164 @@ const DroneWidget = ({
         isExpanded ? 'expanded' : ''
       }`}
     >
-      {/* Header */}
-      <h3 onClick={(e) => {
-        e.stopPropagation();
-        toggleDroneDetails(drone);
-      }}>
-        <div className="drone-header">
-          <span className={`status-indicator ${isStale ? 'stale' : 'active'}`} />
-          <span>Drone {drone[FIELD_NAMES.HW_ID] || 'Unknown'}</span>
-        </div>
-      </h3>
+      <div className="drone-header-section">
+        {/* Header */}
+        <h3 onClick={(e) => {
+          e.stopPropagation();
+          toggleDroneDetails(drone);
+        }}>
+          <div className="drone-header">
+            <span className={`status-indicator ${isStale ? 'stale' : 'active'}`} />
+            <span>Drone {drone[FIELD_NAMES.HW_ID] || 'Unknown'}</span>
+          </div>
+        </h3>
 
-      {/* Critical Status Badges */}
-      <div className="critical-status">
-        <span className={`status-badge ${isArmed ? 'armed' : 'disarmed'}`}>
-          {isArmed ? 'ARMED' : 'DISARMED'}
-        </span>
-        <span className={`status-badge ${isReadyToArm ? 'ready' : 'not-ready'}`}>
-          {isReadyToArm ? 'READY' : 'NOT READY'}
-        </span>
-      </div>
-
-      {/* Position ID Section */}
-      <div className="position-section">
-        <div className="position-info">
-          <strong>Position ID:</strong> {posId}
-          {(() => {
-            if (isAutoDetectZero) {
-              return (
-                <>
-                  <FaInfoCircle
-                    className="posid-info-icon"
-                    data-tooltip-id={`posid-tooltip-info-${drone[FIELD_NAMES.HW_ID]}`}
-                    data-tooltip-content="Auto-detected pos_id=0 (not available yet)."
-                  />
-                  <Tooltip id={`posid-tooltip-info-${drone[FIELD_NAMES.HW_ID]}`} place="top" effect="solid" />
-                </>
-              );
-            }
-            if (posMismatch) {
-              return (
-                <>
-                  <FaExclamationTriangle
-                    className="posid-warning-icon"
-                    data-tooltip-id={`posid-tooltip-${drone[FIELD_NAMES.HW_ID]}`}
-                    data-tooltip-content={`Mismatch: Auto-detected = ${detectedPosId}. Click to fix.`}
-                    onClick={handlePositionConfigClick}
-                    style={{ cursor: 'pointer' }}
-                  />
-                  <Tooltip id={`posid-tooltip-${drone[FIELD_NAMES.HW_ID]}`} place="top" effect="solid" />
-                </>
-              );
-            }
-            if (posId !== 'N/A' && detectedPosId !== 'N/A') {
-              return (
-                <>
-                  <FaCheckCircle
-                    className="posid-match-icon"
-                    data-tooltip-id={`posid-tooltip-match-${drone[FIELD_NAMES.HW_ID]}`}
-                    data-tooltip-content={`Auto-detected matches config (${detectedPosId}).`}
-                  />
-                  <Tooltip id={`posid-tooltip-match-${drone[FIELD_NAMES.HW_ID]}`} place="top" effect="solid" />
-                </>
-              );
-            }
-            return null;
-          })()}
+        {/* Critical Status Badges */}
+        <div className="critical-status">
+          <span className={`status-badge ${isArmed ? 'armed' : 'disarmed'}`}>
+            {isArmed ? 'ARMED' : 'DISARMED'}
+          </span>
+          <span className={`status-badge ${isReadyToArm ? 'ready' : 'not-ready'}`}>
+            {isReadyToArm ? 'READY' : 'NOT READY'}
+          </span>
         </div>
       </div>
 
-      {/* Main Data Grid */}
-      <div className="drone-data-grid">
-        {/* Flight Mode */}
-        <div className="data-item full-width">
-          <span className="data-label">Flight Mode</span>
-          <span className={`mode-badge ${flightModeCategory}`}>
-            {flightModeTitle}
-          </span>
-        </div>
-
-        {/* Mission */}
-        <div className="data-item">
-          <span className="data-label">Mission</span>
-          <span className={`mission-badge ${missionStatusClass}`}>
-            {friendlyMissionName}
-          </span>
-        </div>
-
-        {/* Mission State */}
-        <div className="data-item">
-          <span className="data-label">State</span>
-          <span className={`mission-state-badge ${
-            missionExecuting ? 'executing' : missionReady ? 'ready' : 'idle'
-          }`}>
-            {missionStateName}
-          </span>
-        </div>
-
-        {/* Altitude */}
-        <div className="data-item">
-          <span className="data-label">Altitude</span>
-          <span className="data-value">
-            {getAltitudeDisplay(drone[FIELD_NAMES.POSITION_ALT])}
-          </span>
-        </div>
-
-        {/* Battery */}
-        <div className="data-item">
-          <span className="data-label">Battery</span>
-          <span className={`data-value ${batteryStatus.class}`}>
-            {batteryStatus.text}
-          </span>
-        </div>
-
-        {/* GPS Status */}
-        <div className="data-item">
-          <span className="data-label">GPS Fix</span>
-          <div className="gps-status">
-            <span className={`gps-fix-indicator ${getGpsFixClass(gpsFixType)}`}></span>
-            <span className="data-value">{getGpsFixName(gpsFixType)}</span>
+      <div className="drone-main-data">
+        {/* Position Section */}
+        <div className="position-section">
+          <div className="position-info">
+            <strong>Position ID:</strong> {posId}
+            {(() => {
+              if (isAutoDetectZero) {
+                return (
+                  <>
+                    <FaInfoCircle
+                      className="posid-info-icon"
+                      data-tooltip-id={`posid-tooltip-info-${drone[FIELD_NAMES.HW_ID]}`}
+                      data-tooltip-content="Auto-detected pos_id=0 (not available yet)."
+                    />
+                    <Tooltip id={`posid-tooltip-info-${drone[FIELD_NAMES.HW_ID]}`} place="top" effect="solid" />
+                  </>
+                );
+              }
+              if (posMismatch) {
+                return (
+                  <>
+                    <FaExclamationTriangle
+                      className="posid-warning-icon"
+                      data-tooltip-id={`posid-tooltip-${drone[FIELD_NAMES.HW_ID]}`}
+                      data-tooltip-content={`Mismatch: Auto-detected = ${detectedPosId}. Click to fix.`}
+                      onClick={handlePositionConfigClick}
+                      style={{ cursor: 'pointer' }}
+                    />
+                    <Tooltip id={`posid-tooltip-${drone[FIELD_NAMES.HW_ID]}`} place="top" effect="solid" />
+                  </>
+                );
+              }
+              if (posId !== 'N/A' && detectedPosId !== 'N/A') {
+                return (
+                  <>
+                    <FaCheckCircle
+                      className="posid-match-icon"
+                      data-tooltip-id={`posid-tooltip-match-${drone[FIELD_NAMES.HW_ID]}`}
+                      data-tooltip-content={`Auto-detected matches config (${detectedPosId}).`}
+                    />
+                    <Tooltip id={`posid-tooltip-match-${drone[FIELD_NAMES.HW_ID]}`} place="top" effect="solid" />
+                  </>
+                );
+              }
+              return null;
+            })()}
           </div>
         </div>
 
-        {/* GPS Quality */}
-        <div className="data-item">
-          <span className="data-label">GPS Quality</span>
-          <span className={`data-value ${gpsQuality.class}`}>
-            {gpsQuality.text}
-          </span>
-        </div>
+        {/* Main Data Grid */}
+        <div className="drone-data-grid">
+          {/* Flight Mode */}
+          <div className="data-item">
+            <span className="data-label">Flight Mode</span>
+            <span className={`mode-badge ${flightModeCategory}`}>
+              {flightModeTitle}
+            </span>
+          </div>
 
-        {/* Satellites */}
-        <div className="data-item">
-          <span className="data-label">Satellites</span>
-          <div className="gps-status">
-            <FaSatellite style={{ fontSize: '0.7em', color: '#6b7280' }} />
-            <span className="data-value">{satellitesVisible}</span>
+          {/* Mission */}
+          <div className="data-item">
+            <span className="data-label">Mission</span>
+            <span className={`mission-badge ${missionStatusClass}`}>
+              {friendlyMissionName}
+            </span>
+          </div>
+
+          {/* Mission State */}
+          <div className="data-item">
+            <span className="data-label">State</span>
+            <span className={`mission-state-badge ${
+              missionExecuting ? 'executing' : missionReady ? 'ready' : 'idle'
+            }`}>
+              {missionStateName}
+            </span>
+          </div>
+
+          {/* Altitude */}
+          <div className="data-item">
+            <span className="data-label">Altitude</span>
+            <span className="data-value">
+              {getAltitudeDisplay(drone[FIELD_NAMES.POSITION_ALT])}
+            </span>
+          </div>
+
+          {/* Battery */}
+          <div className="data-item">
+            <span className="data-label">Battery</span>
+            <span className={`data-value ${batteryStatus.class}`}>
+              {batteryStatus.text}
+            </span>
+          </div>
+
+          {/* GPS Status */}
+          <div className="data-item">
+            <span className="data-label">GPS Fix</span>
+            <div className="gps-status">
+              <span className={`gps-fix-indicator ${getGpsFixClass(gpsFixType)}`}></span>
+              <span className="data-value">{getGpsFixName(gpsFixType)}</span>
+            </div>
+          </div>
+
+          {/* GPS Quality */}
+          <div className="data-item">
+            <span className="data-label">GPS Quality</span>
+            <span className={`data-value ${gpsQuality.class}`}>
+              {gpsQuality.text}
+            </span>
+          </div>
+
+          {/* Satellites */}
+          <div className="data-item">
+            <span className="data-label">Satellites</span>
+            <div className="gps-status">
+              <FaSatellite style={{ fontSize: '0.7em', color: '#6b7280' }} />
+              <span className="data-value">{satellitesVisible}</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Last Update Indicator */}
-      <div className="last-update">
-        <div className="update-time">Last seen: {formatLastUpdate(drone[FIELD_NAMES.TIMESTAMP])}</div>
-        {droneIP && droneIP !== 'N/A' && (
-          <div className="drone-ip">{droneIP}</div>
-        )}
-      </div>
+      <div className="drone-action-section">
+        {/* Last Update Indicator */}
+        <div className="last-update">
+          <div className="update-time">Last seen: {formatLastUpdate(drone[FIELD_NAMES.TIMESTAMP])}</div>
+          {droneIP && droneIP !== 'N/A' && (
+            <div className="drone-ip">{droneIP}</div>
+          )}
+        </div>
 
-      {/* Action Commands */}
-      <div className="drone-critical-commands-section">
-        <DroneCriticalCommands droneId={String(drone[FIELD_NAMES.HW_ID])} />
+        {/* Action Commands */}
+        <div className="drone-critical-commands-section">
+          <DroneCriticalCommands droneId={String(drone[FIELD_NAMES.HW_ID])} />
+        </div>
       </div>
-
     </div>
   );
 };

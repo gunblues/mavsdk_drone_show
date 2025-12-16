@@ -35,7 +35,7 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
     { to: '/swarm-trajectory', icon: FaGlobe, label: 'Swarm Trajectory', category: 'workflow' },
     //{ to: '/trajectory-planning', icon: FaRoute, label: 'Trajectory Planning', category: 'workflow' },
     //{ to: '/manage-drone-show', icon: FaGem, label: 'Drone Show Design', category: 'design' },
-    { to: '/custom-show', icon: FaPenSquare, label: 'Custom Show', category: 'design' },
+    //{ to: '/custom-show', icon: FaPenSquare, label: 'Custom Show', category: 'design' },
     //{ to: '/globe-view', icon: FaGlobe, label: 'Drone 3D View', category: 'visualization' }
   ];
 

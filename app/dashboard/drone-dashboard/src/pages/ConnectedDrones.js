@@ -44,6 +44,9 @@ const MissionConfig = () => {
     // Heading slider: single source of truth
     // -----------------------------------------------------
     const [forwardHeading, setForwardHeading] = useState(0);
+    const [showControlButtons, setShowControlButtons] = useState(false);
+    const [showDroneStatsSummary, setShowDroneStatsSummary] = useState(false);
+    const [showHeadingControls, setShowHeadingControls] = useState(false);
   
     // -----------------------------------------------------
     // State variables
@@ -428,7 +431,7 @@ const MissionConfig = () => {
 
   
         {/* Top Control Buttons */}
-        <ControlButtons
+        {showControlButtons && <ControlButtons
           addNewDrone={addNewDrone}
           handleSaveChangesToServer={handleSaveChangesToServerWrapper}
           handleRevertChanges={handleRevertChangesWrapper}
@@ -440,7 +443,7 @@ const MissionConfig = () => {
           configData={configData}
           setConfigData={setConfigData}
           loading={loading}
-        />
+        />}
   
         {/* Warning Banner for Duplicate pos_id and Role Swaps */}
         {(() => {
@@ -580,7 +583,7 @@ const MissionConfig = () => {
         />
   
         {/* Drone Stats Summary */}
-        {configData.length > 0 && (
+        {showDroneStatsSummary && configData.length > 0 && (
           <div className="drone-stats-summary">
             <div className="stat-item">
               <span className="stat-number">{configData.length}</span>
@@ -612,29 +615,49 @@ const MissionConfig = () => {
         )}
   
         {/* Heading Controls */}
-        <div className="heading-controls">
-          <label htmlFor="headingSlider">
-            Forward Heading: {forwardHeading}°
-          </label>
-          <input
-            id="headingSlider"
-            type="range"
-            min={0}
-            max={359}
-            value={forwardHeading}
-            onChange={(e) => setForwardHeading(parseInt(e.target.value, 10))}
-          />
-          <button
-            onClick={() => {
-              toast.info(`TODO: Save heading=${forwardHeading}° to server (placeholder).`);
-            }}
-          >
-            Save Heading to Server
-          </button>
-        </div>
+        {showHeadingControls && (
+          <div className="heading-controls">
+            <label htmlFor="headingSlider">
+              Forward Heading: {forwardHeading}°
+            </label>
+            <input
+              id="headingSlider"
+              type="range"
+              min={0}
+              max={359}
+              value={forwardHeading}
+              onChange={(e) => setForwardHeading(parseInt(e.target.value, 10))}
+            />
+            <button
+              onClick={() => {
+                toast.info(`TODO: Save heading=${forwardHeading}° to server (placeholder).`);
+              }}
+            >
+              Save Heading to Server
+            </button>
+          </div>
+        )}
   
         {/* Main content: Drone Cards & Plots */}
         <div className="content-flex">
+          <div className="initial-launch-plot slide-in-right">
+            <PositionTabs
+              drones={configData}
+              deviationData={deviationData}
+              origin={origin}
+              forwardHeading={forwardHeading}
+              onDroneClick={setEditingDroneId}
+              onRefresh={handleManualRefresh}
+            />
+  
+            <DronePositionMap
+              originLat={origin.lat}
+              originLon={origin.lon}
+              drones={configData}
+              forwardHeading={forwardHeading}
+            />
+          </div>
+
           <div className="drone-cards slide-in-left">
             {sortedConfigData.length > 0 ? (
               sortedConfigData.map((drone, index) => (
@@ -657,24 +680,6 @@ const MissionConfig = () => {
             ) : (
               <p>No drones connected. Please add a drone or connect one to proceed.</p>
             )}
-          </div>
-  
-          <div className="initial-launch-plot slide-in-right">
-            <PositionTabs
-              drones={configData}
-              deviationData={deviationData}
-              origin={origin}
-              forwardHeading={forwardHeading}
-              onDroneClick={setEditingDroneId}
-              onRefresh={handleManualRefresh}
-            />
-  
-            <DronePositionMap
-              originLat={origin.lat}
-              originLon={origin.lon}
-              drones={configData}
-              forwardHeading={forwardHeading}
-            />
           </div>
         </div>
   
@@ -791,17 +796,14 @@ const ConnectedDrones = ({ setSelectedDrone }) => {
             <div className="drone-list">
                 {drones.length === 0 && !error && <p>No valid drone data available.</p>}
                 {drones.map((drone) => (
-                <div
+                    <DroneWidget
                     key={drone.hw_ID}
                     ref={(el) => droneRefs.current[drone.hw_ID] = el}
-                >
-                    <DroneWidget
                     drone={drone}
                     isExpanded={expandedDrone && expandedDrone.hw_ID === drone.hw_ID}
                     toggleDroneDetails={toggleDroneDetails}
                     setSelectedDrone={setSelectedDrone}
                     />
-                </div>
                 ))}
             </div>
 
