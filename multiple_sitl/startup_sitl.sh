@@ -255,6 +255,49 @@ wait_for_hwid() {
     fi
 }
 
+# Function to manage log file rotation and cleanup
+manage_log_file() {
+    local log_file="$1"
+    local max_size_mb="${2:-100}"  # Default 100MB
+    local max_size_bytes=$((max_size_mb * 1024 * 1024))
+
+    if [ -f "$log_file" ]; then
+        local file_size=$(stat -f%z "$log_file" 2>/dev/null || stat -c%s "$log_file" 2>/dev/null || echo 0)
+        if [ "$file_size" -gt "$max_size_bytes" ]; then
+            log_message "Log file $log_file is larger than ${max_size_mb}MB (${file_size} bytes). Rotating..."
+            # Keep only last 2 rotations to save space
+            [ -f "${log_file}.2" ] && rm -f "${log_file}.2"
+            [ -f "${log_file}.1" ] && mv "${log_file}.1" "${log_file}.2"
+            mv "$log_file" "${log_file}.1"
+            log_message "Log file rotated successfully."
+        fi
+    fi
+}
+
+# Function to cleanup old timestamped log files
+cleanup_old_logs() {
+    log_message "Cleaning up old log files..."
+
+    # Ensure logs directory exists
+    mkdir -p "$BASE_DIR/logs"
+
+    # Remove timestamped log files older than 7 days
+    # Format: YYYY-MM-DD_HH-MM-SS.log and their .1, .2, etc. backups
+    find "$BASE_DIR/logs" -type f -name "20*-*-*.log*" -mtime +7 -delete 2>/dev/null || true
+
+    # Remove old rotation backups older than 3 days
+    find "$BASE_DIR/logs" -type f \( -name "*.log.1" -o -name "*.log.2" \) -mtime +3 -delete 2>/dev/null || true
+
+    # Clean up PX4 ulogs older than 7 days (if PX4 directory exists)
+    if [ -d "$PX4_DIR/build" ]; then
+        find "$PX4_DIR/build" -type f -name "*.ulg" -mtime +7 -delete 2>/dev/null || true
+    fi
+
+    # Report current logs directory size
+    local logs_size=$(du -sh "$BASE_DIR/logs" 2>/dev/null | cut -f1 || echo "unknown")
+    log_message "Current logs directory size: $logs_size"
+}
+
 # Function to update the repository
 update_repository() {
     log_message "Navigating to $BASE_DIR..."
@@ -285,14 +328,21 @@ update_repository() {
     fi
 
     log_message "Repository updated successfully."
+
+    # Run git garbage collection to clean up repository and reduce size
+    log_message "Running git garbage collection..."
+    git gc --auto 2>/dev/null || true
 }
 
 # Function to run mavlink2rest in the background
 run_mavlink2rest() {
     log_message "Starting mavlink2rest in the background..."
-    
+
     # Ensure the logs directory exists
     mkdir -p "$(dirname "$MAVLINK2REST_LOG")"
+
+    # Rotate log file if it's too large (50MB limit)
+    manage_log_file "$MAVLINK2REST_LOG" 50
 
     # Run mavlink2rest in the background, redirecting output to log file
     $mavlink2rest_CMD &> "$MAVLINK2REST_LOG" &
@@ -423,7 +473,8 @@ calculate_new_coordinates() {
 
     # Calculate new longitude based on eastward offset (OFFSET_Y)
     # Formula: Δλ = Offset_Y / M_per_degree
-    NEW_LON=$(echo "$DEFAULT_LON + ($OFFSET_Y / $M_PER_DEGREE)" | bc -l)
+    #NEW_LON=$(echo "$DEFAULT_LON + ($OFFSET_Y / $M_PER_DEGREE)" | bc -l)
+    NEW_LON=$(python3 -c "print($DEFAULT_LON + ($OFFSET_Y / $M_PER_DEGREE))")
 
     log_message "New Coordinates - Latitude: $NEW_LAT, Longitude: $NEW_LON"
 }
@@ -467,6 +518,12 @@ start_simulation() {
     log_message "Starting SITL simulation..."
     cd "$PX4_DIR"
 
+    # Ensure logs directory exists
+    mkdir -p "$BASE_DIR/logs"
+
+    # Rotate SITL log file if it's too large (100MB limit)
+    manage_log_file "$BASE_DIR/logs/sitl_simulation.log" 100
+
     # Export instance identifier
     export px4_instance="${HWID}-1"
 
@@ -483,6 +540,12 @@ run_coordinator() {
     if [ "$USE_GLOBAL_PYTHON" = false ]; then
         source "$VENV_DIR/bin/activate"
     fi
+
+    # Ensure logs directory exists
+    mkdir -p "$BASE_DIR/logs"
+
+    # Rotate coordinator log file if it's too large (50MB limit)
+    manage_log_file "$BASE_DIR/logs/coordinator.log" 50
 
     if [ "$VERBOSE_MODE" = true ]; then
         log_message "Running coordinator.py in verbose mode (foreground)."
@@ -523,6 +586,9 @@ check_dependencies
 
 # Wait for the .hwID file
 wait_for_hwid
+
+# Clean up old log files to prevent disk space issues
+cleanup_old_logs
 
 # Update the repository
 update_repository
