@@ -131,6 +131,11 @@ cleanup() {
     echo ""
     log_message "Received interrupt signal. Terminating background processes..."
 
+    if [[ -n "${log_cleanup_pid:-}" ]]; then
+        kill "$log_cleanup_pid" 2>/dev/null || true
+        log_message "Terminated log cleanup process with PID: $log_cleanup_pid"
+    fi
+
     if [[ -n "${simulation_pid:-}" ]]; then
         kill "$simulation_pid" 2>/dev/null || true
         log_message "Terminated SITL simulation with PID: $simulation_pid"
@@ -253,6 +258,22 @@ wait_for_hwid() {
         log_message "ERROR: Extracted HWID '$HWID' is not a positive integer."
         exit 1
     fi
+}
+
+# Background function to prevent log files from filling up disk
+# Runs every 5 minutes and truncates logs larger than 50MB
+continuous_log_cleanup() {
+    while true; do
+        sleep 300  # 5 minutes
+        for log_file in "$BASE_DIR/logs/sitl_simulation.log" "$BASE_DIR/logs/coordinator.log" "$MAVLINK2REST_LOG"; do
+            if [ -f "$log_file" ]; then
+                local file_size=$(stat -c%s "$log_file" 2>/dev/null || echo 0)
+                if [ "$file_size" -gt 52428800 ]; then  # 50MB
+                    truncate -s 0 "$log_file" 2>/dev/null || true
+                fi
+            fi
+        done
+    done
 }
 
 # Function to update the repository
@@ -553,6 +574,11 @@ start_simulation
 
 # Start coordinator.py
 run_coordinator
+
+# Start background log cleanup to prevent disk from filling up
+continuous_log_cleanup &
+log_cleanup_pid=$!
+log_message "Log cleanup process started with PID: $log_cleanup_pid"
 
 log_message ""
 log_message "=============================================="
