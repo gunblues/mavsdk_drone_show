@@ -131,6 +131,11 @@ cleanup() {
     echo ""
     log_message "Received interrupt signal. Terminating background processes..."
 
+    if [[ -n "${cleanup_pid:-}" ]]; then
+        kill "$cleanup_pid" 2>/dev/null || true
+        log_message "Terminated log cleanup process with PID: $cleanup_pid"
+    fi
+
     if [[ -n "${simulation_pid:-}" ]]; then
         kill "$simulation_pid" 2>/dev/null || true
         log_message "Terminated SITL simulation with PID: $simulation_pid"
@@ -288,14 +293,62 @@ cleanup_old_logs() {
     # Remove old rotation backups older than 3 days
     find "$BASE_DIR/logs" -type f \( -name "*.log.1" -o -name "*.log.2" \) -mtime +3 -delete 2>/dev/null || true
 
-    # Clean up PX4 ulogs older than 7 days (if PX4 directory exists)
+    # Clean up ALL PX4 ulogs - these grow very fast and aren't needed in SITL
     if [ -d "$PX4_DIR/build" ]; then
-        find "$PX4_DIR/build" -type f -name "*.ulg" -mtime +7 -delete 2>/dev/null || true
+        find "$PX4_DIR/build" -type f -name "*.ulg" -delete 2>/dev/null || true
+    fi
+
+    # Also clean ulogs from the home PX4 log directory
+    if [ -d "$HOME/.ros/log" ]; then
+        find "$HOME/.ros/log" -type f -mtime +1 -delete 2>/dev/null || true
     fi
 
     # Report current logs directory size
     local logs_size=$(du -sh "$BASE_DIR/logs" 2>/dev/null | cut -f1 || echo "unknown")
     log_message "Current logs directory size: $logs_size"
+}
+
+# Background function to continuously manage disk space
+# This runs every 5 minutes to prevent disk from filling up during long runs
+continuous_log_cleanup() {
+    while true; do
+        sleep 300  # 5 minutes
+
+        # Truncate large log files using truncate command (works with open file handles)
+        for log_file in "$BASE_DIR/logs/sitl_simulation.log" "$BASE_DIR/logs/coordinator.log" "$MAVLINK2REST_LOG"; do
+            if [ -f "$log_file" ]; then
+                local file_size=$(stat -c%s "$log_file" 2>/dev/null || echo 0)
+                # If larger than 50MB, truncate to zero (process will continue writing from start)
+                if [ "$file_size" -gt 52428800 ]; then
+                    truncate -s 0 "$log_file" 2>/dev/null || true
+                fi
+            fi
+        done
+
+        # Delete all PX4 ulogs (not needed for SITL)
+        find "$PX4_DIR/build" -type f -name "*.ulg" -delete 2>/dev/null || true
+
+        # Clean up PX4 out.log and err.log if too large
+        find "$PX4_DIR/build" -type f \( -name "out.log" -o -name "err.log" \) -size +50M -exec truncate -s 1M {} \; 2>/dev/null || true
+
+        # Keep only the 3 most recent timestamped coordinator logs (coordinator creates new files on each import)
+        ls -t "$BASE_DIR/logs"/20*.log 2>/dev/null | tail -n +4 | xargs -r rm -f
+
+        # Clean up core dumps if any
+        find /tmp -name "core.*" -delete 2>/dev/null || true
+        find "$HOME" -maxdepth 1 -name "core.*" -delete 2>/dev/null || true
+
+        # Clean up Python cache
+        find "$BASE_DIR" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+        find "$BASE_DIR" -name "*.pyc" -delete 2>/dev/null || true
+
+        # Clean up ROS logs older than 1 hour
+        find "$HOME/.ros/log" -type f -mmin +60 -delete 2>/dev/null || true
+
+        # Clean up Gazebo logs
+        find "$HOME/.gazebo" -name "*.log" -size +10M -delete 2>/dev/null || true
+
+    done
 }
 
 # Function to update the repository
@@ -619,6 +672,12 @@ start_simulation
 
 # Start coordinator.py
 run_coordinator
+
+# Start background log cleanup process to prevent disk space issues
+log_message "Starting background log cleanup process..."
+continuous_log_cleanup &
+cleanup_pid=$!
+log_message "Log cleanup process started with PID: $cleanup_pid (runs every 5 minutes)"
 
 log_message ""
 log_message "=============================================="
