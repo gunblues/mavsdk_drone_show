@@ -62,6 +62,9 @@ DEFAULT_GIT_REMOTE="origin"
 DEFAULT_GIT_BRANCH="${MDS_BRANCH:-main-candidate}"
 GITHUB_REPO_URL="${MDS_REPO_URL:-https://github.com/alireza787b/mavsdk_drone_show.git}"
 
+# Autopilot type (from environment variable, default to px4 for backward compatibility)
+AUTOPILOT_TYPE="${MDS_AUTOPILOT_TYPE:-px4}"
+
 # Option to use global Python
 USE_GLOBAL_PYTHON=false  # Set to true to use global Python instead of venv
 
@@ -75,6 +78,8 @@ BASE_DIR="$HOME/mavsdk_drone_show"
 VENV_DIR="$BASE_DIR/venv"
 CONFIG_FILE="$BASE_DIR/config_sitl.csv"
 PX4_DIR="$HOME/PX4-Autopilot"
+ARDUPILOT_DIR="$HOME/ardupilot"
+ARDUPILOT_VEHICLE="ArduCopter"
 mavlink2rest_CMD="mavlink2rest -c udpin:127.0.0.1:14569 -s 0.0.0.0:8088"
 MAVLINK2REST_LOG="$BASE_DIR/logs/mavlink2rest.log"
 
@@ -431,8 +436,8 @@ setup_python_env() {
 
 # Function to set MAV_SYS_ID
 set_mav_sys_id() {
-    log_message "Setting MAV_SYS_ID using set_sys_id.py..."
-    if python3 "$BASE_DIR/multiple_sitl/set_sys_id.py"; then
+    log_message "Setting MAV_SYS_ID using set_sys_id.py for $AUTOPILOT_TYPE..."
+    if python3 "$BASE_DIR/multiple_sitl/set_sys_id.py" --autopilot "$AUTOPILOT_TYPE"; then
         log_message "MAV_SYS_ID set successfully."
     else
         log_message "ERROR: Failed to set MAV_SYS_ID."
@@ -532,44 +537,78 @@ calculate_new_coordinates() {
     log_message "New Coordinates - Latitude: $NEW_LAT, Longitude: $NEW_LON"
 }
 
-# Function to export environment variables for PX4 SITL
+# Function to export environment variables for SITL
 export_env_vars() {
-    log_message "Exporting environment variables for PX4 SITL..."
-    export PX4_HOME_LAT="$NEW_LAT"
-    export PX4_HOME_LON="$NEW_LON"
-    export PX4_HOME_ALT="$DEFAULT_ALT"
-    export MAV_SYS_ID="$HWID"
-    log_message "Environment variables set: PX4_HOME_LAT=$PX4_HOME_LAT, PX4_HOME_LON=$PX4_HOME_LON, PX4_HOME_ALT=$PX4_HOME_ALT, MAV_SYS_ID=$MAV_SYS_ID"
+    if [[ "$AUTOPILOT_TYPE" == "ardupilot" ]]; then
+        log_message "Exporting environment variables for ArduPilot SITL..."
+        # ArduPilot uses --home parameter instead of env vars, but we export for reference
+        export ARDUPILOT_HOME_LAT="$NEW_LAT"
+        export ARDUPILOT_HOME_LON="$NEW_LON"
+        export ARDUPILOT_HOME_ALT="$DEFAULT_ALT"
+        export ARDUPILOT_SYSID="$HWID"
+        log_message "Environment variables set: ARDUPILOT_HOME_LAT=$ARDUPILOT_HOME_LAT, ARDUPILOT_HOME_LON=$ARDUPILOT_HOME_LON, ARDUPILOT_HOME_ALT=$ARDUPILOT_HOME_ALT, ARDUPILOT_SYSID=$ARDUPILOT_SYSID"
+    else
+        log_message "Exporting environment variables for PX4 SITL..."
+        export PX4_HOME_LAT="$NEW_LAT"
+        export PX4_HOME_LON="$NEW_LON"
+        export PX4_HOME_ALT="$DEFAULT_ALT"
+        export MAV_SYS_ID="$HWID"
+        log_message "Environment variables set: PX4_HOME_LAT=$PX4_HOME_LAT, PX4_HOME_LON=$PX4_HOME_LON, PX4_HOME_ALT=$PX4_HOME_ALT, MAV_SYS_ID=$MAV_SYS_ID"
+    fi
 }
 
 # Function to determine the simulation command
 determine_simulation_command() {
-    case $SIMULATION_MODE in
-        g)
-            SIMULATION_COMMAND="make px4_sitl gazebo"
-            log_message "Simulation Mode: Graphics Enabled (Gazebo)"
-            ;;
-        j)
-            SIMULATION_COMMAND="make px4_sitl jmavsim"
-            log_message "Simulation Mode: Using jmavsim"
-            ;;
-        h)
-            SIMULATION_COMMAND="HEADLESS=1 make px4_sitl gazebo"
-            log_message "Simulation Mode: Headless (Graphics Disabled)"
-            ;;
-        *)
-            log_message "Invalid simulation mode: $SIMULATION_MODE. Defaulting to headless mode."
-            SIMULATION_COMMAND="HEADLESS=1 make px4_sitl gazebo"
-            ;;
-    esac
+    if [[ "$AUTOPILOT_TYPE" == "ardupilot" ]]; then
+        # ArduPilot SITL command
+        local HOME_LOCATION="$NEW_LAT,$NEW_LON,$DEFAULT_ALT,0"  # lat,lon,alt,heading
+        local INSTANCE=$((HWID - 1))  # ArduPilot instance is 0-indexed
+
+        # ArduPilot SITL uses TCP port 5760 by default (native behavior)
+        # Port offset: instance N uses port 5760 + (N * 10)
+        local ARDUPILOT_PORT=$((5760 + INSTANCE * 10))
+
+        case $SIMULATION_MODE in
+            g)
+                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --home=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --console --map"
+                log_message "Simulation Mode: ArduPilot Graphics Enabled (TCP port $ARDUPILOT_PORT)"
+                ;;
+            j)
+                log_message "JMAVSim not supported for ArduPilot. Using headless mode."
+                ;&  # Fall through to headless
+            h|*)
+                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --home=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --no-mavproxy"
+                log_message "Simulation Mode: ArduPilot Headless (TCP port $ARDUPILOT_PORT)"
+                ;;
+        esac
+    else
+        # PX4 SITL command (existing logic)
+        case $SIMULATION_MODE in
+            g)
+                SIMULATION_COMMAND="make px4_sitl gazebo"
+                log_message "Simulation Mode: PX4 Graphics Enabled (Gazebo)"
+                ;;
+            j)
+                SIMULATION_COMMAND="make px4_sitl jmavsim"
+                log_message "Simulation Mode: PX4 Using jmavsim"
+                ;;
+            h)
+                SIMULATION_COMMAND="HEADLESS=1 make px4_sitl gazebo"
+                log_message "Simulation Mode: PX4 Headless (Graphics Disabled)"
+                ;;
+            *)
+                log_message "Invalid simulation mode: $SIMULATION_MODE. Defaulting to headless mode."
+                SIMULATION_COMMAND="HEADLESS=1 make px4_sitl gazebo"
+                ;;
+        esac
+    fi
 
     log_message "Simulation Command: $SIMULATION_COMMAND"
 }
 
 # Function to start SITL simulation
 start_simulation() {
-    log_message "Starting SITL simulation..."
-    cd "$PX4_DIR"
+    log_message "Starting SITL simulation ($AUTOPILOT_TYPE)..."
 
     # Ensure logs directory exists
     mkdir -p "$BASE_DIR/logs"
@@ -577,8 +616,15 @@ start_simulation() {
     # Rotate SITL log file if it's too large (100MB limit)
     manage_log_file "$BASE_DIR/logs/sitl_simulation.log" 100
 
-    # Export instance identifier
-    export px4_instance="${HWID}-1"
+    if [[ "$AUTOPILOT_TYPE" == "ardupilot" ]]; then
+        cd "$ARDUPILOT_DIR"
+        log_message "Changed to ArduPilot directory: $ARDUPILOT_DIR"
+    else
+        cd "$PX4_DIR"
+        # Export instance identifier for PX4
+        export px4_instance="${HWID}-1"
+        log_message "Changed to PX4 directory: $PX4_DIR"
+    fi
 
     # Execute the simulation command in the background
     eval "$SIMULATION_COMMAND" &> "$BASE_DIR/logs/sitl_simulation.log" &
@@ -626,6 +672,7 @@ log_message " Welcome to the SITL Startup Script!"
 log_message "=============================================="
 log_message ""
 log_message "Configuration:"
+log_message "  Autopilot Type: $AUTOPILOT_TYPE"
 log_message "  Git Remote: $GIT_REMOTE"
 log_message "  Git Branch: $GIT_BRANCH"
 log_message "  Use Global Python: $USE_GLOBAL_PYTHON"

@@ -10,12 +10,22 @@ class MavlinkManager:
 
     def initialize(self):
         try:
+            hw_id = int(self.drone_config.config.get('hw_id', 1))
+
             if self.params.sim_mode:
                 logging.info("Sim mode is enabled. Connecting to SITL...")
-                if self.params.default_sitl:
-                    mavlink_source = f"0.0.0.0:{self.params.sitl_port}"
+
+                # Use autopilot-aware source selection
+                if self.params.AUTOPILOT_TYPE == 'ardupilot':
+                    # ArduPilot SITL: TCP connection to sim_vehicle.py
+                    mavlink_source = self.params.get_mavlink_router_source(hw_id)
+                    logging.info(f"ArduPilot SITL detected - using TCP source: {mavlink_source}")
                 else:
-                    mavlink_source = f"0.0.0.0:{self.drone_config.config['mavlink_port']}"
+                    # PX4 SITL: UDP connection
+                    if self.params.default_sitl:
+                        mavlink_source = f"0.0.0.0:{self.params.sitl_port}"
+                    else:
+                        mavlink_source = f"0.0.0.0:{self.drone_config.config['mavlink_port']}"
             else:
                 if self.params.serial_mavlink:
                     logging.info("Real mode is enabled. Connecting to Pixhawk via serial...")
@@ -29,8 +39,13 @@ class MavlinkManager:
             endpoints = [f"-e {device}" for device in self.params.extra_devices]
 
             if self.params.sim_mode:
-                #already sends to 14550 and 14540
-                pass
+                if self.params.AUTOPILOT_TYPE == 'ardupilot':
+                    # ArduPilot SITL: Router must forward to MAVSDK port (ArduPilot only exposes TCP)
+                    endpoints.append(f"-e 127.0.0.1:{self.params.mavsdk_port}")
+                    logging.info(f"ArduPilot SITL: Adding MAVSDK endpoint 127.0.0.1:{self.params.mavsdk_port}")
+                else:
+                    # PX4 SITL: Already sends to 14550 and 14540, no need to add MAVSDK endpoint
+                    pass
             else:
                 endpoints.append(f"-e 127.0.0.1:{self.params.mavsdk_port}")
 

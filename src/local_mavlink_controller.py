@@ -1,6 +1,7 @@
 #src\local_mavlink_controller.py
 import threading
 import logging
+import os
 from pymavlink import mavutil
 import time
 
@@ -97,7 +98,7 @@ class LocalMavlinkController:
     def process_heartbeat(self, msg):
         """
         Process the HEARTBEAT message and update flight mode and system status.
-        Follows MAVLink/PX4 standards for proper flight mode handling.
+        Follows MAVLink standards and supports both PX4 and ArduPilot autopilots.
         """
         # Store previous values for change detection
         prev_custom_mode = self.drone_config.custom_mode
@@ -105,28 +106,37 @@ class LocalMavlinkController:
 
         # Store MAVLink HEARTBEAT fields according to specification
         self.drone_config.base_mode = msg.base_mode      # MAV_MODE flags (armed, custom mode enabled, etc.)
-        self.drone_config.custom_mode = msg.custom_mode  # PX4-specific flight mode
+        self.drone_config.custom_mode = msg.custom_mode  # Autopilot-specific flight mode
         self.drone_config.system_status = msg.system_status  # MAV_STATE (STANDBY, ACTIVE, etc.)
+
+        # Store autopilot type for mode decoding
+        # MAV_AUTOPILOT_ARDUPILOTMEGA = 3, MAV_AUTOPILOT_PX4 = 12
+        self.drone_config.autopilot_type = msg.autopilot
 
         # Extract arming status from base_mode flags (raw MAVLink value)
         mavlink_armed_flag = (msg.base_mode & mavutil.mavlink.MAV_MODE_FLAG_SAFETY_ARMED) != 0
 
-        # Enhanced arming detection for SITL and real operations
-        # In SITL, the armed flag can be misleading, so we cross-reference with flight mode and system status
-        if mavlink_armed_flag:
-            # If MAVLink says armed, verify with flight mode and system status
-            if (self.drone_config.custom_mode == 0 and
-                self.drone_config.system_status == mavutil.mavlink.MAV_STATE_ACTIVE):
-                # Special case: SITL shows armed flag but custom_mode=0 (Initializing)
-                # This typically means the system is ready but not actually armed for flight
-                self.drone_config.is_armed = False
-                self.log_debug(f"⚠️ SITL Armed flag detected but flight mode is Initializing - treating as disarmed")
-            else:
-                # Normal case: armed flag set and flight mode is valid
-                self.drone_config.is_armed = True
+        # Autopilot-specific arming detection
+        if msg.autopilot == mavutil.mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA:
+            # ArduPilot: simpler arming detection - trust the armed flag directly
+            self.drone_config.is_armed = mavlink_armed_flag
         else:
-            # MAVLink says disarmed
-            self.drone_config.is_armed = False
+            # PX4: Enhanced arming detection for SITL and real operations
+            # In SITL, the armed flag can be misleading, so we cross-reference with flight mode and system status
+            if mavlink_armed_flag:
+                # If MAVLink says armed, verify with flight mode and system status
+                if (self.drone_config.custom_mode == 0 and
+                    self.drone_config.system_status == mavutil.mavlink.MAV_STATE_ACTIVE):
+                    # Special case: SITL shows armed flag but custom_mode=0 (Initializing)
+                    # This typically means the system is ready but not actually armed for flight
+                    self.drone_config.is_armed = False
+                    self.log_debug(f"⚠️ SITL Armed flag detected but flight mode is Initializing - treating as disarmed")
+                else:
+                    # Normal case: armed flag set and flight mode is valid
+                    self.drone_config.is_armed = True
+            else:
+                # MAVLink says disarmed
+                self.drone_config.is_armed = False
 
         # Update pre-arm readiness based on system status and sensor health
         self._update_pre_arm_status()
@@ -146,17 +156,32 @@ class LocalMavlinkController:
         if self.drone_config.is_armed != prev_armed:
             self.log_info(f"🔄 Arming changed: {prev_armed} → {self.drone_config.is_armed}")
 
-        # Special attention to custom modes and offboard
-        if self.drone_config.custom_mode == 393216:
-            self.log_info(f"🚁 OFFBOARD mode active: {self.drone_config.custom_mode}")
-        elif self.drone_config.custom_mode in [33816576, 100925440]:
-            self.log_info(f"🚁 Custom mode active: {mode_name} ({self.drone_config.custom_mode})")
-        elif self.drone_config.custom_mode == 0:
-            self.log_warning(f"⚠️ Flight mode is 0 - possible issue with HEARTBEAT or mode initialization")
-        elif mode_name.startswith('Unknown'):
-            main_mode = self.drone_config.custom_mode >> 16
-            sub_mode = self.drone_config.custom_mode & 0xFFFF
-            self.log_warning(f"⚠️ Unknown flight mode: {self.drone_config.custom_mode} (Main: {main_mode}, Sub: {sub_mode})")
+        # Special attention to custom modes - autopilot-specific handling
+        autopilot_type = os.environ.get('MDS_AUTOPILOT_TYPE', 'px4')
+        if hasattr(self.drone_config, 'autopilot_type'):
+            if self.drone_config.autopilot_type == mavutil.mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA:
+                autopilot_type = 'ardupilot'
+
+        if autopilot_type == 'ardupilot':
+            # ArduCopter mode logging
+            if self.drone_config.custom_mode == 4:  # Guided mode (equivalent to Offboard)
+                self.log_info(f"🚁 GUIDED mode active (ArduPilot): {mode_name}")
+            elif self.drone_config.custom_mode in [3, 6, 9]:  # Auto, RTL, Land
+                self.log_info(f"🚁 Auto mode active: {mode_name} ({self.drone_config.custom_mode})")
+            elif mode_name.startswith('Unknown'):
+                self.log_warning(f"⚠️ Unknown ArduCopter flight mode: {self.drone_config.custom_mode}")
+        else:
+            # PX4 mode logging
+            if self.drone_config.custom_mode == 393216:
+                self.log_info(f"🚁 OFFBOARD mode active: {self.drone_config.custom_mode}")
+            elif self.drone_config.custom_mode in [33816576, 100925440]:
+                self.log_info(f"🚁 Custom mode active: {mode_name} ({self.drone_config.custom_mode})")
+            elif self.drone_config.custom_mode == 0:
+                self.log_warning(f"⚠️ Flight mode is 0 - possible issue with HEARTBEAT or mode initialization")
+            elif mode_name.startswith('Unknown'):
+                main_mode = self.drone_config.custom_mode >> 16
+                sub_mode = self.drone_config.custom_mode & 0xFFFF
+                self.log_warning(f"⚠️ Unknown flight mode: {self.drone_config.custom_mode} (Main: {main_mode}, Sub: {sub_mode})")
                       
     def _update_pre_arm_status(self):
         """
@@ -222,7 +247,62 @@ class LocalMavlinkController:
 
     def _get_flight_mode_name(self, custom_mode):
         """
-        Helper function to decode PX4 custom_mode to human-readable name for debugging.
+        Helper function to decode custom_mode to human-readable name for debugging.
+        Supports both PX4 and ArduPilot autopilots.
+        """
+        # Check autopilot type from environment or detected value
+        autopilot_type = os.environ.get('MDS_AUTOPILOT_TYPE', 'px4')
+
+        # Also check if we detected ArduPilot from HEARTBEAT
+        if hasattr(self.drone_config, 'autopilot_type'):
+            if self.drone_config.autopilot_type == mavutil.mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA:
+                autopilot_type = 'ardupilot'
+
+        if autopilot_type == 'ardupilot':
+            return self._get_arducopter_mode_name(custom_mode)
+        else:
+            return self._get_px4_mode_name(custom_mode)
+
+    def _get_arducopter_mode_name(self, custom_mode):
+        """
+        Decode ArduCopter custom_mode to human-readable name.
+        ArduCopter uses simple integer mode values (0-27).
+        """
+        arducopter_modes = {
+            0: 'Stabilize',
+            1: 'Acro',
+            2: 'AltHold',
+            3: 'Auto',
+            4: 'Guided',
+            5: 'Loiter',
+            6: 'RTL',
+            7: 'Circle',
+            8: 'Reserved',
+            9: 'Land',
+            10: 'Reserved',
+            11: 'Drift',
+            12: 'Reserved',
+            13: 'Sport',
+            14: 'Flip',
+            15: 'AutoTune',
+            16: 'PosHold',
+            17: 'Brake',
+            18: 'Throw',
+            19: 'Avoid_ADSB',
+            20: 'Guided_NoGPS',
+            21: 'SmartRTL',
+            22: 'FlowHold',
+            23: 'Follow',
+            24: 'ZigZag',
+            25: 'SystemID',
+            26: 'Heli_Autorotate',
+            27: 'Auto RTL',
+        }
+        return arducopter_modes.get(custom_mode, f'Unknown({custom_mode})')
+
+    def _get_px4_mode_name(self, custom_mode):
+        """
+        Decode PX4 custom_mode to human-readable name for debugging.
         This matches the frontend mapping in px4FlightModes.js
         """
         flight_modes = {

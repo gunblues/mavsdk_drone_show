@@ -22,7 +22,7 @@ echo
 echo "This script creates and configures multiple Docker container instances for the drone show simulation."
 echo "Each container represents a drone instance running the SITL (Software In The Loop) environment."
 echo
-echo "Usage: bash create_dockers.sh <number_of_instances> [--verbose] [--subnet SUBNET] [--start-id START_ID] [--start-ip START_IP]"
+echo "Usage: bash create_dockers.sh <number_of_instances> [--verbose] [--subnet SUBNET] [--start-id START_ID] [--start-ip START_IP] [--autopilot AUTOPILOT]"
 echo
 echo "Parameters:"
 echo "  <number_of_instances>   Number of drone instances to create."
@@ -30,6 +30,7 @@ echo "  --verbose               Run in verbose mode for debugging (only creates 
 echo "  --subnet SUBNET         Specify a custom Docker network subnet (default: 172.18.0.0/24)."
 echo "  --start-id START_ID     Specify the starting drone ID (default: 1)."
 echo "  --start-ip START_IP     Specify the starting IP address's last octet within the subnet (default: 2)."
+echo "  --autopilot AUTOPILOT   Specify autopilot type: 'px4' or 'ardupilot' (default: px4)."
 echo
 echo "Notes:"
 echo "  - Drones are assigned IP addresses starting from the specified START_IP."
@@ -89,8 +90,11 @@ echo
 # Global variables (with environment variable override support)
 STARTUP_SCRIPT_HOST="$HOME/mavsdk_drone_show/multiple_sitl/startup_sitl.sh"
 STARTUP_SCRIPT_CONTAINER="/root/mavsdk_drone_show/multiple_sitl/startup_sitl.sh"
-TEMPLATE_IMAGE="${MDS_DOCKER_IMAGE:-drone-template:latest}"
 VERBOSE=false
+AUTOPILOT_TYPE="${MDS_AUTOPILOT_TYPE:-px4}"  # Default to PX4 for backward compatibility
+
+# TEMPLATE_IMAGE will be set after parsing arguments based on autopilot type
+TEMPLATE_IMAGE=""
 
 # Variables for custom network, starting drone ID, and starting IP
 CUSTOM_SUBNET="172.18.0.0/24"  # Default subnet
@@ -246,6 +250,7 @@ create_instance() {
     if ! docker run --name "$container_name" --network "$DOCKER_NETWORK_NAME" --ip "$IP_ADDRESS" \
         -e MDS_REPO_URL="${MDS_REPO_URL:-}" \
         -e MDS_BRANCH="${MDS_BRANCH:-}" \
+        -e MDS_AUTOPILOT_TYPE="${AUTOPILOT_TYPE}" \
         -d "$TEMPLATE_IMAGE" tail -f /dev/null >/dev/null; then
         printf "Error: Failed to start container '%s'\n" "$container_name" >&2
         rm -f "$hwid_file"  # Clean up local .hwID file
@@ -350,12 +355,36 @@ main() {
                 START_IP="$2"
                 shift 2
                 ;;
+            --autopilot)
+                AUTOPILOT_TYPE="$2"
+                shift 2
+                ;;
             *)
                 echo "Unknown option: $1"
                 usage
                 ;;
         esac
     done
+
+    # Validate autopilot type
+    if [[ "$AUTOPILOT_TYPE" != "px4" && "$AUTOPILOT_TYPE" != "ardupilot" ]]; then
+        printf "Error: Invalid autopilot type '%s'. Must be 'px4' or 'ardupilot'.\n" "$AUTOPILOT_TYPE" >&2
+        usage
+    fi
+
+    # Set TEMPLATE_IMAGE based on autopilot type (after parsing arguments)
+    if [[ -n "${MDS_DOCKER_IMAGE:-}" ]]; then
+        # User specified custom image, use it directly
+        TEMPLATE_IMAGE="$MDS_DOCKER_IMAGE"
+    elif [[ "$AUTOPILOT_TYPE" == "ardupilot" ]]; then
+        TEMPLATE_IMAGE="drone-template-ardupilot:latest"
+    else
+        TEMPLATE_IMAGE="drone-template-px4:latest"
+    fi
+
+    printf "Using autopilot: %s\n" "$AUTOPILOT_TYPE"
+    printf "Using Docker image: %s\n" "$TEMPLATE_IMAGE"
+    echo
 
     # Validate inputs
     validate_input "$num_instances"
@@ -397,6 +426,8 @@ EOF
     printf "All %d instance(s) created and configured successfully.\n" "$num_instances"
     echo "========================================================="
     echo
+    printf "Autopilot type: %s\n" "$AUTOPILOT_TYPE"
+    printf "Docker image: %s\n" "$TEMPLATE_IMAGE"
     printf "Instances created with starting drone ID: %d\n" "$START_ID"
     printf "Starting IP address's last octet: %d\n" "$START_IP"
     printf "Docker network name: %s\n" "$DOCKER_NETWORK_NAME"

@@ -34,6 +34,25 @@ class Params:
     config_url = 'https://nb1.joomtalk.ir/download/config.csv'  # Ugit addRL for the configuration file
     swarm_url = 'https://nb1.joomtalk.ir/download/swarm.csv'    # URL for the swarm file
 
+    # ===================================================================================
+    # AUTOPILOT CONFIGURATION
+    # ===================================================================================
+    # Autopilot type can be set via environment variable for Docker SITL simulations.
+    # Supports: 'px4' (default) or 'ardupilot'
+    #
+    # This is automatically set by create_dockers.sh --autopilot flag and passed
+    # to containers via MDS_AUTOPILOT_TYPE environment variable.
+    #
+    # Connection differences:
+    #   PX4:       UDP port 14550
+    #   ArduPilot: TCP port 5760 (instance N uses 5760 + N*10)
+    # ===================================================================================
+    AUTOPILOT_TYPE = os.environ.get('MDS_AUTOPILOT_TYPE', 'px4')
+
+    # ArduPilot-specific SITL configuration
+    ARDUPILOT_SITL_BASE_PORT = 5760      # Base TCP port for ArduPilot SITL
+    ARDUPILOT_SITL_PORT_INCREMENT = 10   # Port increment per instance
+
     # Git Configuration
     # ===================================================================================
     # REPOSITORY CONFIGURATION: Environment Variable Support (MDS v3.1+)
@@ -462,3 +481,67 @@ class Params:
         print(f"[DEBUG] Custom Trajectory File: {custom_show_trajectory_filename}")
 
         return (drone_show_trajectory_filename, custom_show_trajectory_filename)
+
+    @classmethod
+    def get_mavlink_connection_string(cls, hw_id=1):
+        """
+        Returns the MAVLink connection string based on autopilot type.
+
+        Args:
+            hw_id (int): Hardware ID of the drone (used for ArduPilot port calculation)
+
+        Returns:
+            str: Connection string for pymavlink (e.g., 'udp:localhost:14550' or 'tcp:localhost:5760')
+        """
+        if cls.AUTOPILOT_TYPE == 'ardupilot' and cls.sim_mode:
+            # ArduPilot SITL: TCP connection, port = 5760 + (instance * 10)
+            instance = hw_id - 1  # ArduPilot instances are 0-indexed
+            port = cls.ARDUPILOT_SITL_BASE_PORT + (instance * cls.ARDUPILOT_SITL_PORT_INCREMENT)
+            return f"tcp:localhost:{port}"
+        else:
+            # PX4 or real mode: UDP connection
+            return f"udp:localhost:{cls.local_mavlink_port}"
+
+    @classmethod
+    def get_mavsdk_connection_string(cls, hw_id=1):
+        """
+        Returns the MAVSDK connection string based on autopilot type.
+
+        For ArduPilot SITL: MAVSDK connects to UDP port forwarded by mavlink-routerd,
+        since ArduPilot SITL's TCP port only allows a single connection (used by the router).
+
+        Args:
+            hw_id (int): Hardware ID of the drone (used for ArduPilot port calculation)
+
+        Returns:
+            str: Connection string for MAVSDK (e.g., 'udp://:14540')
+        """
+        if cls.AUTOPILOT_TYPE == 'ardupilot' and cls.sim_mode:
+            # ArduPilot SITL: Connect to UDP port forwarded by mavlink-routerd
+            # The router connects to TCP 5760 and forwards to mavsdk_port (14540)
+            return f"udp://:{cls.mavsdk_port}"
+        else:
+            # PX4 or real mode: UDP connection to SITL/hardware
+            return f"udp://:{cls.sitl_port}"
+
+    @classmethod
+    def get_mavlink_router_source(cls, hw_id=1, mavlink_port=None):
+        """
+        Returns the MAVLink router source string based on autopilot type.
+
+        Args:
+            hw_id (int): Hardware ID of the drone
+            mavlink_port (int): Optional custom MAVLink port
+
+        Returns:
+            str: Source string for mavlink-routerd
+        """
+        if cls.AUTOPILOT_TYPE == 'ardupilot' and cls.sim_mode:
+            # ArduPilot SITL: TCP source
+            instance = hw_id - 1
+            port = cls.ARDUPILOT_SITL_BASE_PORT + (instance * cls.ARDUPILOT_SITL_PORT_INCREMENT)
+            return f"tcp:localhost:{port}"
+        else:
+            # PX4 or real mode: UDP source
+            port = mavlink_port if mavlink_port else cls.sitl_port
+            return f"0.0.0.0:{port}"

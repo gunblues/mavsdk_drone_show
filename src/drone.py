@@ -1,5 +1,6 @@
 import csv
 from mavsdk.system import System
+from params import Params
 
 
 class Drone:
@@ -33,8 +34,10 @@ class Drone:
         self.time_offset = 0
 
     async def connect(self):
-        await self.drone.connect(system_address=f"udp://{self.mavlink_port}")
-        print(f"Drone connecting with UDP: {self.mavlink_port}")
+        # Use autopilot-aware connection string from Params
+        connection_string = Params.get_mavsdk_connection_string(int(self.hw_id))
+        await self.drone.connect(system_address=connection_string)
+        print(f"Drone connecting with: {connection_string}")
         async for state in self.drone.core.connection_state():
             if state.is_connected:
                 print(f"Drone id {self.hw_id} connected on Port: {self.mavlink_port} and grpc Port: {self.grpc_port}")
