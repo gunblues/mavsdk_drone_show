@@ -406,7 +406,7 @@ Congratulations, you've successfully set up a drone swarm SITL on a remote serve
 
 ### Caveats and Future Work
 
-Please note that this project is still in its early development phases. Many aspects have not been designed with security or performance in mind. Your contributions to improve these aspects are welcome. Feel free to collaborate, post recommendations, or [report issues](https://github.com/alireza787b/mavsdk_drone_show/issues).
+Please note that this project is still in its early development phases. Many aspects have not been designed with security or performance in mind.
 
 ### Warning
 
