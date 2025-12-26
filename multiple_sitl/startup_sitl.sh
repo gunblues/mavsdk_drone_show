@@ -314,17 +314,17 @@ cleanup_old_logs() {
 }
 
 # Background function to continuously manage disk space
-# This runs every 5 minutes to prevent disk from filling up during long runs
+# This runs every 10 minutes to prevent disk from filling up during long runs
 continuous_log_cleanup() {
     while true; do
-        sleep 300  # 5 minutes
+        sleep 600  # 10 minutes
 
         # Truncate large log files using truncate command (works with open file handles)
         for log_file in "$BASE_DIR/logs/sitl_simulation.log" "$BASE_DIR/logs/coordinator.log" "$MAVLINK2REST_LOG"; do
             if [ -f "$log_file" ]; then
                 local file_size=$(stat -c%s "$log_file" 2>/dev/null || echo 0)
-                # If larger than 50MB, truncate to zero (process will continue writing from start)
-                if [ "$file_size" -gt 52428800 ]; then
+                # If larger than 100MB, truncate to zero (process will continue writing from start)
+                if [ "$file_size" -gt 104857600 ]; then
                     truncate -s 0 "$log_file" 2>/dev/null || true
                 fi
             fi
