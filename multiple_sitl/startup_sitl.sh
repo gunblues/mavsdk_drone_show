@@ -580,11 +580,12 @@ determine_simulation_command() {
                 log_message "JMAVSim not supported for ArduPilot. Using headless mode."
                 ;&  # Fall through to headless
             h|*)
-                # Use sim_vehicle.py with --no-mavproxy and native UDP output
-                # This provides the simulation backend (physics/clock) that ArduCopter needs
-                # ArduCopter will output UDP on port 5760, mavlink-routerd must listen there
-                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --no-mavproxy --no-rebuild"
-                log_message "Simulation Mode: ArduPilot Headless SITL (no mavproxy, TCP on 5760)"
+                # Use sim_vehicle.py with mavproxy in non-interactive daemon mode
+                # mavproxy handles simulation setup and forwards MAVLink to UDP
+                # --daemon: run without interactive shell
+                # --non-interactive: don't require terminal input
+                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --out=udp:127.0.0.1:$UDP_OUT_PORT -m '--daemon --non-interactive' --no-rebuild"
+                log_message "Simulation Mode: ArduPilot Headless SITL with MAVProxy daemon (UDP to $UDP_OUT_PORT)"
                 ;;
         esac
     else

@@ -15,20 +15,14 @@ class MavlinkManager:
             if self.params.sim_mode:
                 logging.info("Sim mode is enabled. Connecting to SITL...")
 
-                if self.params.AUTOPILOT_TYPE == 'ardupilot':
-                    # ArduPilot SITL: Connect to TCP port 5760 (no mavproxy mode)
-                    # Port = 5760 + (instance * 10), instance = hw_id - 1
-                    instance = hw_id - 1
-                    tcp_port = self.params.ARDUPILOT_SITL_BASE_PORT + (instance * self.params.ARDUPILOT_SITL_PORT_INCREMENT)
-                    mavlink_source = f"127.0.0.1:{tcp_port}"
-                    logging.info(f"ArduPilot SITL - using TCP source: {mavlink_source}")
+                # Both PX4 and ArduPilot SITL output to UDP 14550
+                # PX4: natively outputs to 14550
+                # ArduPilot: mavproxy (in daemon mode) forwards to 14550 via --out
+                if self.params.default_sitl:
+                    mavlink_source = f"0.0.0.0:{self.params.sitl_port}"
                 else:
-                    # PX4 SITL: Listen on UDP port 14550
-                    if self.params.default_sitl:
-                        mavlink_source = f"0.0.0.0:{self.params.sitl_port}"
-                    else:
-                        mavlink_source = f"0.0.0.0:{self.drone_config.config['mavlink_port']}"
-                    logging.info(f"PX4 SITL - using UDP source: {mavlink_source}")
+                    mavlink_source = f"0.0.0.0:{self.drone_config.config['mavlink_port']}"
+                logging.info(f"{self.params.AUTOPILOT_TYPE.upper()} SITL - using UDP source: {mavlink_source}")
             else:
                 if self.params.serial_mavlink:
                     logging.info("Real mode is enabled. Connecting to Pixhawk via serial...")
@@ -59,12 +53,7 @@ class MavlinkManager:
 
             # Build mavlink-routerd command
             # -t 0 disables TCP listening (prevents conflict with ArduPilot's TCP port 5760)
-            if self.params.sim_mode and self.params.AUTOPILOT_TYPE == 'ardupilot':
-                # ArduPilot: Use -p for TCP client connection to SITL
-                mavlink_router_cmd = "mavlink-routerd -t 0 " + ' '.join(endpoints) + f" -p {mavlink_source}"
-            else:
-                # PX4/Real: Use UDP source
-                mavlink_router_cmd = "mavlink-routerd -t 0 " + ' '.join(endpoints) + ' ' + mavlink_source
+            mavlink_router_cmd = "mavlink-routerd -t 0 " + ' '.join(endpoints) + ' ' + mavlink_source
             logging.info(f"Starting MAVLink router with command: {mavlink_router_cmd}")
 
             self.mavlink_router_process = subprocess.Popen(mavlink_router_cmd, shell=True)
