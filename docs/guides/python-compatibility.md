@@ -112,16 +112,5 @@ Expected output:
 - `Python 3.13.x` ✅
 - `Python 3.10.x` ❌ (too old)
 
-## Need Help?
 
-If you encounter issues:
 
-1. Check this guide first
-2. Review the installation logs
-3. Open an issue on [GitHub](https://github.com/alireza787b/mavsdk_drone_show/issues)
-4. Contact: p30planets@gmail.com
-
----
-
-**Last Updated:** January 2025
-**MARLIN Version:** 3.5+
