@@ -686,15 +686,3 @@ FastAPI can handle 1,000+ concurrent WebSocket connections per drone. For GCS mo
 - Target: Sub-1ms latency for local requests
 
 ---
-
-## Support
-
-**Issues:** Report at [GitHub Issues](https://github.com/alireza787b/mavsdk_drone_show/issues)
-
-**Questions:** See `/help` in main README
-
----
-
-**Last Updated:** 2025-11-22
-**Maintainer:** MAVSDK Drone Show Team
-**License:** Same as main project
