@@ -271,34 +271,4 @@ docker rm my-drone-dev my-drone-dev-v2
 
 ---
 
-## Commercial Support & Custom Implementation
-
-### For Companies and Real-World Deployments
-
-The basic SITL demo is designed for evaluation and learning. For production deployments, custom features, or hardware implementation, professional support is available:
-
-**Services Available:**
-- ✈️ **Custom SITL Features** - Specialized simulation scenarios and advanced functionality
-- 🚁 **Hardware Implementation** - Real drone deployment with safety protocols
-- 🏢 **Enterprise Integration** - Custom APIs, cloud integration, fleet management
-- 📊 **Performance Optimization** - Large-scale swarm optimization and mission planning
-- 🔧 **Training & Support** - Team training and ongoing technical support
-- 🎯 **Custom Mission Types** - Specialized applications beyond standard formations
-
-**Contact for Professional Implementation:**
-- **Email:** [p30planets@gmail.com](mailto:p30planets@gmail.com)
-- **LinkedIn:** [Alireza Ghaderi](https://www.linkedin.com/in/alireza787b/)
-
-> **🏢 Note for Companies:** Real-world drone deployments require aviation compliance, safety protocols, and specialized expertise. Contact us for professional consultation and implementation contracts.
-
----
-
-## Support
-
-For help with advanced configuration:
-- **Email:** [p30planets@gmail.com](mailto:p30planets@gmail.com)
-- **LinkedIn:** [Alireza Ghaderi](https://www.linkedin.com/in/alireza787b/)
-
----
-
 *Back to: [Main SITL Guide](sitl_demo_docker.md)*
