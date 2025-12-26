@@ -7,35 +7,16 @@ Welcome to the MARLIN Simulation Server Setup Guide. This document provides a **
 
 > **🎯 This guide is for DEMO and EVALUATION only**
 >
-> For production deployments, custom features, or real hardware implementation:
-> - **Email:** [p30planets@gmail.com](mailto:p30planets@gmail.com)
-> - **LinkedIn:** [Alireza Ghaderi](https://www.linkedin.com/in/alireza787b/)
 
 This document provides a complete, all-in-one framework for setting up and running either:
 - **Decentralized Drone Shows** (offline, pre-planned trajectories), and
 - **Live, Cooperative Swarm Missions** (real-time, leader–follower clustering with dynamic role changes).
 
-MARLIN 3.5 is built on the [`mavsdk_drone_show`](https://github.com/alireza787b/mavsdk_drone_show) repository (released September 2025). It supports:
+MARLIN 3.5 supports:
 - **Offline Choreography Modes:** Preload "ShowMode" trajectory files (e.g., Spiral, Wave, Heart) that every drone executes in sync.
 - **Real-Time Swarm Mode:** A clustered leader–follower architecture with smart leader-failure handling, automatic leader re-election, dynamic formation reshuffling, and per-drone role changes on the fly.
 
 In other words, you can use the **same system** either to run an elaborate, pre-programmed drone-show performance or to orchestrate a live, fully decentralized cooperative mission—with failsafe checks, global setpoints, and robust startup sequences baked in. Both drone-show artists and swarm-mission engineers will find this guide relevant for taking advantage of MARLIN 3.5's unified feature set.
-
-For a step-by-step walkthrough beginning with version 0.1, see our YouTube tutorial playlist linked in the [GitHub repository](https://github.com/alireza787b/mavsdk_drone_show).
-
-
-## Watch the Setup Video
-
-Check out our detailed **100-Drone SITL Test in Clustered Cloud Servers | MARLIN Version 2** video for a visual guide on setting up and running the simulation.
-
-[![100-Drone SITL Test](https://img.youtube.com/vi/VsNs3kFKEvU/maxresdefault.jpg)](https://www.youtube.com/watch?v=VsNs3kFKEvU)
-
-
-## Smart Swarm Clustered Leader–Follower Video
-
-If you are interested in how cooperative missions and “Smart Swarm” mode works, check this video:  
-[![Smart Swarm Clustered Leader–Follower](https://img.youtube.com/vi/qRXE3LTd40c/maxresdefault.jpg)](https://youtu.be/qRXE3LTd40c)
-
 
 ## Resource Allocation
 
@@ -152,7 +133,6 @@ The default setup works perfectly for demos and testing. For advanced users who 
 
 📖 **[Advanced SITL Configuration Guide](advanced_sitl.md)** - Custom repository setup with simple copy-paste commands
 
-> **⚠️ Note:** Advanced configuration requires good understanding of Git, Docker, and Linux. Contact [p30planets@gmail.com](mailto:p30planets@gmail.com) for help.
 
 ### Portainer Installation (Optional but Highly Recommended)
 
@@ -455,28 +435,3 @@ With the switch from Version 2 to Version 3, we have fully re-enabled and harden
     - Fixed a race condition where, under high CPU load, some drones would skip critical parameter uploads and end up in GUIDED mode instead of AUTO.  
     - Resolved an issue in which emergency land commands were occasionally ignored when issued during a mode transition.  
     - Optimized network-buffer handling to prevent packet drops when simulating large swarms (100+ drones).  
-
-
-## Additional Resources
-
-For more detailed information, you can consult the following:
-
-- [Portainer Guide by Network Chuck](https://www.youtube.com/watch?v=iX0HbrfRyvc)
-- [My YouTube Playlist on Project History](https://www.youtube.com/playlist?list=PLVZvZdBQdm_7ViwRhUFrmLFpFkP3VSakk)
-- [My GitHub Repository](https://github.com/alireza787b/mavsdk_drone_show)
-- [Netbird Knowledge Base](https://docs.netbird.io/)
-- [MAVLink Official Documentation](https://mavlink.io/en/)
-- [QGroundControl Documentation](https://docs.qgroundcontrol.com/master/en/)
-
-For more tutorials, code samples, and ways to contact me, check out the following resources:
-
-- Email: [p30planets@gmail.com](mailto:p30planets@gmail.com)
-- [My LinkedIn Profile](https://www.linkedin.com/in/alireza787b/)
-
----
-
-© 2025 Alireza Ghaderi
-
-[mavsdk_drone_show](https://github.com/alireza787b/mavsdk_drone_show) - [Alireza Ghaderi](https://www.linkedin.com/in/alireza787b/)
-
-This documentation is licensed under **CC BY-SA 4.0**. Feel free to reuse or modify according to the terms. Please attribute and link back to the original repository.
