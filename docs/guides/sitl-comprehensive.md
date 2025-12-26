@@ -12,11 +12,11 @@ This document provides a complete, all-in-one framework for setting up and runni
 - **Decentralized Drone Shows** (offline, pre-planned trajectories), and
 - **Live, Cooperative Swarm Missions** (real-time, leader–follower clustering with dynamic role changes).
 
-MARLIN 3.5 supports:
+MARLIN 0.1 supports:
 - **Offline Choreography Modes:** Preload "ShowMode" trajectory files (e.g., Spiral, Wave, Heart) that every drone executes in sync.
 - **Real-Time Swarm Mode:** A clustered leader–follower architecture with smart leader-failure handling, automatic leader re-election, dynamic formation reshuffling, and per-drone role changes on the fly.
 
-In other words, you can use the **same system** either to run an elaborate, pre-programmed drone-show performance or to orchestrate a live, fully decentralized cooperative mission—with failsafe checks, global setpoints, and robust startup sequences baked in. Both drone-show artists and swarm-mission engineers will find this guide relevant for taking advantage of MARLIN 3.5's unified feature set.
+In other words, you can use the **same system** either to run an elaborate, pre-programmed drone-show performance or to orchestrate a live, fully decentralized cooperative mission—with failsafe checks, global setpoints, and robust startup sequences baked in. Both drone-show artists and swarm-mission engineers will find this guide relevant for taking advantage of MARLIN 0.1's unified feature set.
 
 ## Resource Allocation
 
@@ -414,9 +414,9 @@ While SITL simulations are great for testing, they are not a substitute for real
 
 We are committed to regularly updating this project to make it a reliable product soon. Thank you for your interest, and happy flying!
 
-## Enhancements in Version 3.5 (Released September 2025)
+## Enhancements in Version 0.1 (Released December 2025)
 
-With the switch from Version 2 to Version 3, we have fully re-enabled and hardened the smart swarm’s Leader–Follower mode, and overhauled the drone-show workflow. Details:
+With Version 0.1, we have fully re-enabled and hardened the smart swarm’s Leader–Follower mode, and overhauled the drone-show workflow. Details:
 
 - **Leader–Follower Mode Now Fully Operational**  
   - Basic leader failure handling is implemented: if the leader goes offline or fails to respond, followers automatically revert to a safe loiter point and await a new leader assignment.  

@@ -6,9 +6,9 @@ MARLIN supports the following Python versions:
 
 - ✅ **Python 3.11** (Recommended for stability)
 - ✅ **Python 3.12**
-- ✅ **Python 3.13** (Latest - fully supported as of MARLIN v3.5)
+- ✅ **Python 3.13** (Latest - fully supported as of MARLIN v0.1)
 
-## What Changed in Version 3.5
+## What Changed in Version 0.1
 
 ### Python 3.13 Compatibility Fixes
 

@@ -1,8 +1,8 @@
-# MAVSDK Drone Show Documentation
+# MARLIN Documentation
 
-**Complete documentation index for MARLIN 3.6**
+**Complete documentation index for MARLIN 0.1**
 
-Welcome to the MAVSDK Drone Show documentation! This index will help you find the right guide for your needs.
+Welcome to the MARLIN documentation! This index will help you find the right guide for your needs.
 
 ---
 
@@ -151,7 +151,7 @@ Topics covered:
 - Automated version synchronization
 - Manual override capabilities
 
-**Current Version:** 3.6
+**Current Version:** 0.1
 
 **Changelog:** See [CHANGELOG.md](../CHANGELOG.md) for complete version history.
 
@@ -233,6 +233,6 @@ Please submit a pull request or open an issue on GitHub.
 
 ---
 
-**Last Updated:** November 2025 (Version 3.6)
+**Last Updated:** December 2025 (Version 0.1)
 
 © 2025 Alireza Ghaderi | Licensed under CC BY-SA 4.0

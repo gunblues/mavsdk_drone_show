@@ -674,7 +674,7 @@ INITIAL_HASH=$(md5sum "$SCRIPT_PATH" | cut -d ' ' -f 1)
 
 echo
 echo "╔════════════════════════════════════════════════════════════════════════════╗"
-echo "║            MAVSDK Drone Show - Hardware Setup Script v3.5.2               ║"
+echo "║                    MARLIN - Hardware Setup Script v0.1                     ║"
 echo "╚════════════════════════════════════════════════════════════════════════════╝"
 echo
 
