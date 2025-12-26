@@ -66,16 +66,16 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
         {!isCollapsed ? (
           <div className="header-expanded">
             <div className="brand">
-              <span className="brand-icon">🚁</span>
+              <img src="/valtec_logo.png" alt="Marlin" className="brand-icon-img" />
               <div className="brand-text">
-                <h3>Swarm Control</h3>
+                <h3>Marlin</h3>
                 <span className="version">{VERSION_DISPLAY}</span>
               </div>
             </div>
           </div>
         ) : (
           <div className="header-collapsed">
-            <span className="brand-icon-collapsed">🚁</span>
+            <img src="/valtec_logo.png" alt="Marlin" className="brand-icon-img-collapsed" />
           </div>
         )}
       </div>

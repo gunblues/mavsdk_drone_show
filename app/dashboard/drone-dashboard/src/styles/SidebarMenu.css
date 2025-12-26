@@ -158,6 +158,22 @@
   height: 40px;
 }
 
+.brand-icon-img {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--border-radius-base);
+  object-fit: contain;
+  box-shadow: var(--shadow-md);
+}
+
+.brand-icon-img-collapsed {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-base);
+  object-fit: contain;
+  box-shadow: var(--shadow-sm);
+}
+
 /* Navigation Section - No Scrolling Design */
 .sidebar-nav {
   flex: 1;
