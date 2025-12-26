@@ -1,12 +1,12 @@
 # MARLIN
 
-**All-in-One Drone Show & Smart Swarm Framework for PX4**
+**All-in-One Drone Show & Smart Swarm Framework for PX4 & ArduPilot**
 
-[![Version](https://img.shields.io/badge/version-3.6-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-0.1-blue.svg)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-PolyForm%20Dual-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue.svg)](docs/guides/python-compatibility.md)
 
-MARLIN is a unified platform for PX4-based drone performances and intelligent swarm missions. Whether you want to run pre-planned, decentralized drone shows using SkyBrush outputs or orchestrate live, collaborative swarms with leader–follower clustering, MARLIN has you covered.
+MARLIN is a unified platform for PX4 and ArduPilot-based drone performances and intelligent swarm missions. Whether you want to run pre-planned, decentralized drone shows using SkyBrush outputs or orchestrate live, collaborative swarms with leader–follower clustering, MARLIN has you covered.
 
 ---
 
@@ -71,7 +71,7 @@ MARLIN combines three core components into a single, cohesive package:
 - In-flight failsafe monitors for communication, altimeter, ESC health
 
 ### Stable Startup Handshake
-- Three-way acknowledgement chain (Drone ⇄ PX4 ⇄ MAVSDK ⇄ GCS)
+- Three-way acknowledgement chain (Drone ⇄ Autopilot ⇄ MAVSDK ⇄ GCS)
 - "OK-to-Start" broadcast prevents premature launches
 - Guaranteed readiness before takeoff
 
@@ -90,9 +90,11 @@ MARLIN combines three core components into a single, cohesive package:
 - REST API endpoints via MAVLink2REST
 
 ### Automated Docker Environment
-- Prebuilt image includes: PX4 1.16, MAVSDK, MAVLink Router, MAVLink2REST, Gazebo
+- Support for both **PX4** and **ArduPilot** autopilots
+- Build scripts for Docker images (`build_px4_image.sh`, `build_ardupilot_image.sh`)
+- Images include: MAVSDK, MAVLink Router, MAVProxy, Gazebo
 - Auto hardware-ID detection
-- Dynamic container creation scripts
+- Dynamic container creation with `--autopilot px4` or `--autopilot ardupilot`
 
 ### Mission Configuration Tools
 - SkyBrush CSV → MARLIN converter script
@@ -116,12 +118,35 @@ The fastest way to try MARLIN is with our SITL (Software-In-The-Loop) demo:
 📖 **[SITL Demo Guide](docs/guides/sitl-comprehensive.md)** - Complete step-by-step setup
 
 This guide covers:
-- Docker image pull/load commands
+- Docker image build/load commands
 - Environment setup (`setup_environment.sh`, `create_dockers.sh`)
 - Network, MAVLink Router, Netbird VPN configuration
 - React dashboard startup (`linux_dashboard_start.sh --sitl`)
 - Uploading offline trajectories or launching live swarm missions
 - 3D Trajectory Planning setup (add Mapbox access token to `.env`)
+
+#### Building Docker Images
+
+```bash
+# Build PX4 image
+bash tools/build_px4_image.sh
+
+# Build ArduPilot image (from scratch)
+bash tools/build_ardupilot_image.sh --from-scratch
+
+# Or build ArduPilot on top of PX4 image (faster)
+bash tools/build_ardupilot_image.sh
+```
+
+#### Creating Drone Containers
+
+```bash
+# PX4 drones (default)
+bash multiple_sitl/create_dockers.sh 5 --autopilot px4
+
+# ArduPilot drones
+bash multiple_sitl/create_dockers.sh 5 --autopilot ardupilot
+```
 
 **Quick Start Option:**
 📖 **[Quick Start Guide](docs/quickstart/sitl-demo.md)** - Essential steps only (condensed version)
@@ -173,23 +198,6 @@ All project documentation is organized in the `docs/` folder:
 - **[Swarm Trajectory Feature](docs/features/swarm-trajectory.md)** - Smart swarm capabilities
 - **[Origin System](docs/features/origin-system.md)** - Coordinate system implementation
 - **[Control Modes and Coordinates](docs/control-modes-and-coordinates.md)** - Comprehensive control modes, coordinate systems, and Phase 2 reference
-
----
-
-## Version & Changelog
-
-**Current Version: 3.6** (November 2025)
-
-Major updates in this version:
-- Documentation restructure and professional organization
-- Unified versioning system across entire project
-- Enhanced GCS configuration with .env auto-update
-- Production-ready UI/UX improvements
-- Dark mode fixes and accessibility improvements
-
-📖 **[Full Changelog](CHANGELOG.md)** - Complete version history from v0.1 to current
-
-📖 **[Versioning Guide](docs/VERSIONING.md)** - How we manage versions and releases
 
 ---
 
