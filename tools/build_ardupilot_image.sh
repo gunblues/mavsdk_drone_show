@@ -2,8 +2,8 @@
 # =============================================================================
 # Script Name: build_ardupilot_image.sh
 # Description: Build ArduPilot Docker image for drone show SITL simulation
-# Author: MAVSDK Drone Show Team
-# Date: December 2024
+# Author: MARLIN Team
+# Date: December 2025
 # =============================================================================
 #
 # This script builds a Docker image with ArduPilot SITL installed, based on
