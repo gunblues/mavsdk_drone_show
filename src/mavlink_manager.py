@@ -52,7 +52,8 @@ class MavlinkManager:
             else:
                 endpoints.append(f"-e {self.params.GCS_IP}:{int(self.drone_config.config['mavlink_port'])}")
 
-            mavlink_router_cmd = "mavlink-routerd " + ' '.join(endpoints) + ' ' + mavlink_source
+            # -t 0 disables TCP listening (prevents conflict with ArduPilot's TCP port 5760)
+            mavlink_router_cmd = "mavlink-routerd -t 0 " + ' '.join(endpoints) + ' ' + mavlink_source
             logging.info(f"Starting MAVLink router with command: {mavlink_router_cmd}")
 
             self.mavlink_router_process = subprocess.Popen(mavlink_router_cmd, shell=True)
