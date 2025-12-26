@@ -143,8 +143,6 @@ For custom repositories, production SITL deployments, or advanced scenarios:
 - Professional drone operation knowledge and certifications
 - Additional hardware setup, networking, and safety configurations
 
-**For real hardware deployment assistance, see the [Contact](#contact--contributions) section.**
-
 ---
 
 ## Documentation
