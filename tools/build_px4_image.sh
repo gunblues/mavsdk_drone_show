@@ -231,10 +231,11 @@ docker exec "$TEMP_CONTAINER" bash -c "
     cd /root
 
     echo '=== Cloning PX4-Autopilot repository ==='
-    git clone --recursive https://github.com/PX4/PX4-Autopilot.git
+    git clone https://github.com/PX4/PX4-Autopilot.git
     cd PX4-Autopilot
-    git checkout ${PX4_BRANCH}
-    git submodule update --init --recursive
+    git checkout -f ${PX4_BRANCH}
+    git clean -fd
+    git submodule update --init --recursive --force
 
     echo '=== Building PX4 SITL ==='
     DONT_RUN=1 make px4_sitl gazebo-classic
