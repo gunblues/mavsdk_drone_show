@@ -523,18 +523,6 @@ If you encounter issues during migration:
 3. Review Flask logs: `journalctl -u gcs-server -f`
 4. Check browser console for frontend errors
 5. Consult example configurations in this guide
-6. Report issues: https://github.com/alireza787b/mavsdk_drone_show/issues
-
----
-
-## Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| **3.3** | **Nov 2025** | **Removed debug_port and gcs_ip; added GCS configuration UI; custom hardware options** |
-| 3.2 | Nov 2025 | Added `serial_port` and `baudrate` columns (10 columns total) |
-| 3.1 | Earlier | Added environment variable support for Git config |
-| 3.0 | Earlier | Initial multi-drone support |
 
 ---
 
