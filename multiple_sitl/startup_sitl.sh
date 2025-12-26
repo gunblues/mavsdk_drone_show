@@ -568,23 +568,22 @@ determine_simulation_command() {
         # Port offset: instance N uses port 5760 + (N * 10)
         local ARDUPILOT_PORT=$((5760 + INSTANCE * 10))
 
-        # ArduPilot with --udp sends to UDP 127.0.0.1:5760 by default
-        # We'll configure mavlink-routerd to listen on this port
-        local ARDUPILOT_UDP_PORT=5760
+        # ArduPilot SITL with mavproxy for proper UDP forwarding
+        local UDP_OUT_PORT=14550
 
         case $SIMULATION_MODE in
             g)
-                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --console --map"
+                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --out=udp:127.0.0.1:$UDP_OUT_PORT --console --map"
                 log_message "Simulation Mode: ArduPilot Graphics Enabled"
                 ;;
             j)
                 log_message "JMAVSim not supported for ArduPilot. Using headless mode."
                 ;&  # Fall through to headless
             h|*)
-                # Use --udp to make ArduCopter output via UDP instead of TCP
-                # This avoids the need for mavproxy and TCP connection issues
-                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --udp --no-mavproxy"
-                log_message "Simulation Mode: ArduPilot Headless UDP (port $ARDUPILOT_UDP_PORT)"
+                # Run with mavproxy but daemon mode for UDP forwarding
+                # mavproxy handles the TCP connection and forwards to UDP
+                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --out=udp:127.0.0.1:$UDP_OUT_PORT --daemon"
+                log_message "Simulation Mode: ArduPilot Headless with MAVProxy daemon (UDP to $UDP_OUT_PORT)"
                 ;;
         esac
     else
