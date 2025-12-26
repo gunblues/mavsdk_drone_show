@@ -1,8 +1,8 @@
 #!/bin/bash
-# Install Git Sync (MDS) Service
+# Install Git Sync (MARLIN) Service
 
 echo "-----------------------------------------"
-echo "Installing Git Sync (MDS) Service"
+echo "Installing Git Sync (MARLIN) Service"
 echo "-----------------------------------------"
 
 # Ensure the script is run as root
@@ -54,5 +54,5 @@ echo "Checking the status of the Git Sync service..."
 systemctl status git_sync_mds.service --no-pager
 
 echo "-----------------------------------------"
-echo "Git Sync (MDS) Service installation complete!"
+echo "Git Sync (MARLIN) Service installation complete!"
 echo "-----------------------------------------"

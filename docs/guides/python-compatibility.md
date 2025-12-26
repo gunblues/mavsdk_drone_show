@@ -6,13 +6,13 @@ MARLIN supports the following Python versions:
 
 - ✅ **Python 3.11** (Recommended for stability)
 - ✅ **Python 3.12**
-- ✅ **Python 3.13** (Latest - fully supported as of MDS v3.5)
+- ✅ **Python 3.13** (Latest - fully supported as of MARLIN v3.5)
 
 ## What Changed in Version 3.5
 
 ### Python 3.13 Compatibility Fixes
 
-The latest Raspberry Pi OS now ships with Python 3.13. We've updated MDS to work perfectly with this version:
+The latest Raspberry Pi OS now ships with Python 3.13. We've updated MARLIN to work perfectly with this version:
 
 1. **Removed deprecated packages**
    - Removed `asyncio` package (built into Python since 3.4)
@@ -124,4 +124,4 @@ If you encounter issues:
 ---
 
 **Last Updated:** January 2025
-**MDS Version:** 3.5+
+**MARLIN Version:** 3.5+

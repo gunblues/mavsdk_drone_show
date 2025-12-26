@@ -1,15 +1,15 @@
 
-# MDS Simulation Server Setup Guide MDS 2.0
+# MARLIN Simulation Server Setup Guide (v2.0 - DEPRECATED)
 
 ## Introduction
 
-Welcome to the MDS Simulation Server Setup Guide. This document aims to provide a comprehensive set of instructions to set up your own drone simulation server, based on the [`mavsdk_drone_show`](https://github.com/alireza787b/mavsdk_drone_show) GitHub repository. The repository was created in Nov 2024 and is based on version 2.0 of the original project.
+Welcome to the MARLIN Simulation Server Setup Guide. This document aims to provide a comprehensive set of instructions to set up your own drone simulation server, based on the [`mavsdk_drone_show`](https://github.com/alireza787b/mavsdk_drone_show) GitHub repository. The repository was created in Nov 2024 and is based on version 2.0 of the original project.
 
 For a step-by-step walkthrough from version 0.1, you can follow our YouTube tutorial playlist. Links to these tutorials are available in the [GitHub repository](https://github.com/alireza787b/mavsdk_drone_show).
 
 ## Watch the Setup Video
 
-Check out our detailed **100-Drone SITL Test in Clustered Cloud Servers | MDS Mavsdk Drone Show Version 2** video for a visual guide on setting up and running the simulation.
+Check out our detailed **100-Drone SITL Test in Clustered Cloud Servers | MARLIN Version 2** video for a visual guide on setting up and running the simulation.
 
 [![100-Drone SITL Test](https://img.youtube.com/vi/VsNs3kFKEvU/maxresdefault.jpg)](https://www.youtube.com/watch?v=VsNs3kFKEvU)
 
@@ -170,7 +170,7 @@ pip install -r requirements.txt
 
 ### Webserver Software Installations
 
-MDS's swarm dashboard requires Node.js and npm. Install them by following the instructions for your operating system on the [official Node.js website](https://nodejs.org/en/download/package-manager) (version 20 using nvm is recommended).
+MARLIN's swarm dashboard requires Node.js and npm. Install them by following the instructions for your operating system on the [official Node.js website](https://nodejs.org/en/download/package-manager) (version 20 using nvm is recommended).
 
 Run the automated webserver setup and run script:
 
@@ -189,7 +189,7 @@ You should now be able to access the GUI via a browser using your domain, IP, or
 
 You can configure your mission, swarm design, or drone show using SkyBrush or similar tools.
 
-Remember, if you want to make any changes to these configurations, you should push those changes to your own forked GitHub repo; otherwise, none of these settings will take effect and will be overwritten (pulled) from the main MDS repo.
+Remember, if you want to make any changes to these configurations, you should push those changes to your own forked GitHub repo; otherwise, none of these settings will take effect and will be overwritten (pulled) from the main MARLIN repo.
 
 Certainly! Below is the updated **Run Drone Instances** section for your README. It is structured to cater to both novice users and advanced users who wish to deploy drones across multiple servers (VPS). The section includes clear instructions, detailed explanations, and links to additional resources for advanced configurations.
 
@@ -380,7 +380,7 @@ In the given command, MAVLink messages are being sent initially on port `34550` 
 On your local GCS, open QGroundControl and navigate to **'Application Settings'** > **'Comm Links'**. Create a new comm link, name it (e.g., **'server1'**), check the **'High Latency'** mode, set the connection type to **'UDP'**, set the port to **`24550`**, and add the server (`SERVER_GCS_NETBIRD_IP`). Save and select this comm link to connect. All your drones should now be auto-detected.
 
 #### Using MAVLink2REST
-While its not yet fully implemented, soon MDS will rely more on MAVLink2REST. If you setup the routing and Netbird network, you should be able to access each drone via REST API on port 8088 eg. http://172.18.0.2:8088 . visit [MAVLINK2REST documentation](https://github.com/mavlink/mavlink2rest) for more.
+While its not yet fully implemented, soon MARLIN will rely more on MAVLink2REST. If you setup the routing and Netbird network, you should be able to access each drone via REST API on port 8088 eg. http://172.18.0.2:8088 . visit [MAVLINK2REST documentation](https://github.com/mavlink/mavlink2rest) for more.
 
 
 ## Clean-Up

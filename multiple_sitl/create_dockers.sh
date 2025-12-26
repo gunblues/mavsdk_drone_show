@@ -43,9 +43,9 @@ echo "  bash create_dockers.sh 1 --verbose"
 echo
 echo "For ADVANCED USERS - Custom Repository Configuration:"
 echo "  Set environment variables before running this script:"
-echo "    export MDS_REPO_URL=\"git@github.com:yourorg/yourrepo.git\""
-echo "    export MDS_BRANCH=\"your-branch\""
-echo "    export MDS_DOCKER_IMAGE=\"your-image:tag\""
+echo "    export MARLIN_REPO_URL=\"git@github.com:yourorg/yourrepo.git\""
+echo "    export MARLIN_BRANCH=\"your-branch\""
+echo "    export MARLIN_DOCKER_IMAGE=\"your-image:tag\""
 echo "  Then run: bash create_dockers.sh <number>"
 echo "  See: docs/advanced_sitl.md for complete guide"
 echo
@@ -53,7 +53,7 @@ echo "==============================================================="
 echo
 
 # =============================================================================
-# DOCKER CONFIGURATION: Environment Variable Support (MDS v3.1+)
+# DOCKER CONFIGURATION: Environment Variable Support (MARLIN v3.1+)
 # =============================================================================
 # This script now supports custom Docker images and repository configuration
 # via environment variables while maintaining full backward compatibility.
@@ -66,24 +66,24 @@ echo
 # FOR ADVANCED USERS (Custom Docker Images & Repositories):
 #   - Build custom image first (see tools/build_custom_image.sh)
 #   - Set environment variables before running this script:
-#     export MDS_DOCKER_IMAGE="company-drone:v1.0"
-#     export MDS_REPO_URL="git@github.com:company/fork.git"
-#     export MDS_BRANCH="production"
+#     export MARLIN_DOCKER_IMAGE="company-drone:v1.0"
+#     export MARLIN_REPO_URL="git@github.com:company/fork.git"
+#     export MARLIN_BRANCH="production"
 #   - All containers will use your custom image and repository
 #
 # ENVIRONMENT VARIABLES SUPPORTED:
-#   MDS_DOCKER_IMAGE  - Docker image name to use (default: drone-template:latest)
-#   MDS_REPO_URL      - Git repository URL (passed to containers)
-#   MDS_BRANCH        - Git branch name (passed to containers)
+#   MARLIN_DOCKER_IMAGE  - Docker image name to use (default: drone-template:latest)
+#   MARLIN_REPO_URL      - Git repository URL (passed to containers)
+#   MARLIN_BRANCH        - Git branch name (passed to containers)
 #
 # EXAMPLES:
 #   # Normal usage (no environment variables):
 #   bash create_dockers.sh 5
 #
 #   # Advanced usage with custom image and repository:
-#   export MDS_DOCKER_IMAGE="mycompany-drone:v2.0"
-#   export MDS_REPO_URL="git@github.com:mycompany/drone-fork.git"
-#   export MDS_BRANCH="production"
+#   export MARLIN_DOCKER_IMAGE="mycompany-drone:v2.0"
+#   export MARLIN_REPO_URL="git@github.com:mycompany/drone-fork.git"
+#   export MARLIN_BRANCH="production"
 #   bash create_dockers.sh 10
 # =============================================================================
 
@@ -91,7 +91,7 @@ echo
 STARTUP_SCRIPT_HOST="$HOME/mavsdk_drone_show/multiple_sitl/startup_sitl.sh"
 STARTUP_SCRIPT_CONTAINER="/root/mavsdk_drone_show/multiple_sitl/startup_sitl.sh"
 VERBOSE=false
-AUTOPILOT_TYPE="${MDS_AUTOPILOT_TYPE:-px4}"  # Default to PX4 for backward compatibility
+AUTOPILOT_TYPE="${MARLIN_AUTOPILOT_TYPE:-px4}"  # Default to PX4 for backward compatibility
 
 # TEMPLATE_IMAGE will be set after parsing arguments based on autopilot type
 TEMPLATE_IMAGE=""
@@ -248,9 +248,9 @@ create_instance() {
 
     # Run the container with specified network and IP (pass environment variables for repository config)
     if ! docker run --name "$container_name" --network "$DOCKER_NETWORK_NAME" --ip "$IP_ADDRESS" \
-        -e MDS_REPO_URL="${MDS_REPO_URL:-}" \
-        -e MDS_BRANCH="${MDS_BRANCH:-}" \
-        -e MDS_AUTOPILOT_TYPE="${AUTOPILOT_TYPE}" \
+        -e MARLIN_REPO_URL="${MARLIN_REPO_URL:-}" \
+        -e MARLIN_BRANCH="${MARLIN_BRANCH:-}" \
+        -e MARLIN_AUTOPILOT_TYPE="${AUTOPILOT_TYPE}" \
         -d "$TEMPLATE_IMAGE" tail -f /dev/null >/dev/null; then
         printf "Error: Failed to start container '%s'\n" "$container_name" >&2
         rm -f "$hwid_file"  # Clean up local .hwID file
@@ -373,9 +373,9 @@ main() {
     fi
 
     # Set TEMPLATE_IMAGE based on autopilot type (after parsing arguments)
-    if [[ -n "${MDS_DOCKER_IMAGE:-}" ]]; then
+    if [[ -n "${MARLIN_DOCKER_IMAGE:-}" ]]; then
         # User specified custom image, use it directly
-        TEMPLATE_IMAGE="$MDS_DOCKER_IMAGE"
+        TEMPLATE_IMAGE="$MARLIN_DOCKER_IMAGE"
     elif [[ "$AUTOPILOT_TYPE" == "ardupilot" ]]; then
         TEMPLATE_IMAGE="drone-template-ardupilot:latest"
     else

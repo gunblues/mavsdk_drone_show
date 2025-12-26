@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # =============================================================================
-# MDS Custom Docker Image Builder (MDS v3.1+)
+# MARLIN Custom Docker Image Builder (MARLIN v3.1+)
 # =============================================================================
 # This script automates the creation of custom Docker images for advanced users
-# who want to deploy MDS with their own forked repositories.
+# who want to deploy MARLIN with their own forked repositories.
 #
 # WHAT THIS SCRIPT DOES:
 # 1. Takes a base drone-template:latest image
@@ -38,13 +38,13 @@ SCRIPT_VERSION="1.0.0"
 # CONFIGURATION WITH ENVIRONMENT VARIABLE SUPPORT
 # =============================================================================
 # You can override these values via:
-# 1. Environment variables (MDS_REPO_URL, MDS_BRANCH, MDS_DOCKER_IMAGE)
+# 1. Environment variables (MARLIN_REPO_URL, MARLIN_BRANCH, MARLIN_DOCKER_IMAGE)
 # 2. Command line arguments (highest priority)
 # 3. Default values (fallback)
 
-DEFAULT_REPO_URL="${MDS_REPO_URL:-git@github.com:alireza787b/mavsdk_drone_show.git}"
-DEFAULT_BRANCH="${MDS_BRANCH:-main-candidate}"
-DEFAULT_IMAGE_NAME="${MDS_DOCKER_IMAGE:-drone-template:custom}"
+DEFAULT_REPO_URL="${MARLIN_REPO_URL:-git@github.com:alireza787b/mavsdk_drone_show.git}"
+DEFAULT_BRANCH="${MARLIN_BRANCH:-main-candidate}"
+DEFAULT_IMAGE_NAME="${MARLIN_DOCKER_IMAGE:-drone-template:custom}"
 BASE_IMAGE="drone-template:latest"
 
 # =============================================================================
@@ -54,7 +54,7 @@ BASE_IMAGE="drone-template:latest"
 # Display usage information
 show_usage() {
     cat << EOF
-🚀 MDS Custom Docker Image Builder v${SCRIPT_VERSION}
+🚀 MARLIN Custom Docker Image Builder v${SCRIPT_VERSION}
 
 USAGE:
     ${SCRIPT_NAME} [REPO_URL] [BRANCH] [IMAGE_NAME]
@@ -62,15 +62,15 @@ USAGE:
 PARAMETERS:
     REPO_URL     Git repository URL (SSH or HTTPS format)
                  Default: ${DEFAULT_REPO_URL}
-                 Env var: MDS_REPO_URL
+                 Env var: MARLIN_REPO_URL
 
     BRANCH       Git branch name to checkout
                  Default: ${DEFAULT_BRANCH}
-                 Env var: MDS_BRANCH
+                 Env var: MARLIN_BRANCH
 
     IMAGE_NAME   Name for the new Docker image
                  Default: ${DEFAULT_IMAGE_NAME}
-                 Env var: MDS_DOCKER_IMAGE
+                 Env var: MARLIN_DOCKER_IMAGE
 
 EXAMPLES:
     # Use defaults (from env vars or built-in defaults):
@@ -89,9 +89,9 @@ EXAMPLES:
     ${SCRIPT_NAME} https://github.com/company/fork.git main company-drone:v1.0
 
 ENVIRONMENT VARIABLES:
-    export MDS_REPO_URL="git@github.com:company/fork.git"
-    export MDS_BRANCH="production"
-    export MDS_DOCKER_IMAGE="company-drone:v1.0"
+    export MARLIN_REPO_URL="git@github.com:company/fork.git"
+    export MARLIN_BRANCH="production"
+    export MARLIN_DOCKER_IMAGE="company-drone:v1.0"
     ${SCRIPT_NAME}
 
 OPTIONS:
@@ -101,7 +101,7 @@ OPTIONS:
 NOTES:
     - This script requires the base image '${BASE_IMAGE}' to exist
     - For private repositories, ensure git credentials are properly configured
-    - The resulting image can be used with: export MDS_DOCKER_IMAGE=<IMAGE_NAME>
+    - The resulting image can be used with: export MARLIN_DOCKER_IMAGE=<IMAGE_NAME>
 EOF
 }
 
@@ -240,7 +240,7 @@ EOF
 
     # Step 3: Commit container to new image
     log_info "Step 3/4: Creating new Docker image..."
-    local commit_message="Custom MDS image: ${repo_url}@${branch} ($(date '+%Y-%m-%d %H:%M:%S'))"
+    local commit_message="Custom MARLIN image: ${repo_url}@${branch} ($(date '+%Y-%m-%d %H:%M:%S'))"
 
     if ! docker commit -m "${commit_message}" "${temp_container}" "${image_name}" >/dev/null; then
         log_error "Failed to commit container to new image"
@@ -327,7 +327,7 @@ main() {
     echo
     echo "NEXT STEPS:"
     echo "1. Set environment variable:"
-    echo "   export MDS_DOCKER_IMAGE=\"${image_name}\""
+    echo "   export MARLIN_DOCKER_IMAGE=\"${image_name}\""
     echo
     echo "2. Deploy drones using your custom image:"
     echo "   bash multiple_sitl/create_dockers.sh <number_of_drones>"

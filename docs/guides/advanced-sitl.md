@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide is for advanced users who want to use their own forked repository or custom Docker images with MDS SITL.
+This guide is for advanced users who want to use their own forked repository or custom Docker images with MARLIN SITL.
 
 > **⚠️ Prerequisites Required:**
 > - Good understanding of Git, Docker, and Linux
@@ -10,7 +10,7 @@ This guide is for advanced users who want to use their own forked repository or 
 > - Ability to maintain forked repositories
 
 > **⚠️ Important Warning:**
-> Using custom repositories disconnects you from automatic MDS updates. You'll need to manually sync your fork with upstream changes.
+> Using custom repositories disconnects you from automatic MARLIN updates. You'll need to manually sync your fork with upstream changes.
 
 ---
 
@@ -22,15 +22,15 @@ Copy and paste these commands, replacing with your repository details:
 
 ```bash
 # Set your custom repository configuration
-export MDS_REPO_URL="git@github.com:YOURORG/YOURREPO.git"
-export MDS_BRANCH="your-branch-name"
-export MDS_DOCKER_IMAGE="your-custom-image:latest"
+export MARLIN_REPO_URL="git@github.com:YOURORG/YOURREPO.git"
+export MARLIN_BRANCH="your-branch-name"
+export MARLIN_DOCKER_IMAGE="your-custom-image:latest"
 
 # Save to file for future use (optional)
 cat > ~/.mds_config << EOF
-export MDS_REPO_URL="git@github.com:YOURORG/YOURREPO.git"
-export MDS_BRANCH="your-branch-name"
-export MDS_DOCKER_IMAGE="your-custom-image:latest"
+export MARLIN_REPO_URL="git@github.com:YOURORG/YOURREPO.git"
+export MARLIN_BRANCH="your-branch-name"
+export MARLIN_DOCKER_IMAGE="your-custom-image:latest"
 EOF
 ```
 
@@ -63,8 +63,8 @@ If you don't want to set up SSH keys:
 
 ```bash
 # Use HTTPS URL instead
-export MDS_REPO_URL="https://github.com/YOURORG/YOURREPO.git"
-export MDS_BRANCH="your-branch-name"
+export MARLIN_REPO_URL="https://github.com/YOURORG/YOURREPO.git"
+export MARLIN_BRANCH="your-branch-name"
 
 # Deploy
 bash multiple_sitl/create_dockers.sh 5
@@ -91,9 +91,9 @@ bash tools/build_custom_image.sh "git@github.com:YOURORG/YOURREPO.git" "your-bra
 ### Example 1: Company Fork
 
 ```bash
-export MDS_REPO_URL="git@github.com:mycompany/mds-fork.git"
-export MDS_BRANCH="production"
-export MDS_DOCKER_IMAGE="mycompany-drone:v1.0"
+export MARLIN_REPO_URL="git@github.com:mycompany/marlin-fork.git"
+export MARLIN_BRANCH="production"
+export MARLIN_DOCKER_IMAGE="mycompany-drone:v1.0"
 
 bash tools/build_custom_image.sh
 bash multiple_sitl/create_dockers.sh 10
@@ -102,8 +102,8 @@ bash multiple_sitl/create_dockers.sh 10
 ### Example 2: Development Branch
 
 ```bash
-export MDS_REPO_URL="git@github.com:myusername/mds-dev.git"
-export MDS_BRANCH="feature-branch"
+export MARLIN_REPO_URL="git@github.com:myusername/marlin-dev.git"
+export MARLIN_BRANCH="feature-branch"
 
 bash multiple_sitl/create_dockers.sh 3
 ```
@@ -112,13 +112,13 @@ bash multiple_sitl/create_dockers.sh 3
 
 ```bash
 # Development
-export MDS_REPO_URL="git@github.com:company/mds.git"
-export MDS_BRANCH="develop"
+export MARLIN_REPO_URL="git@github.com:company/marlin.git"
+export MARLIN_BRANCH="develop"
 bash multiple_sitl/create_dockers.sh 2
 
 # Production
-export MDS_REPO_URL="git@github.com:company/mds.git"
-export MDS_BRANCH="production"
+export MARLIN_REPO_URL="git@github.com:company/marlin.git"
+export MARLIN_BRANCH="production"
 bash multiple_sitl/create_dockers.sh 20
 ```
 
@@ -140,12 +140,12 @@ bash app/linux_dashboard_start.sh --help
 
 ```bash
 # Check what will be used
-echo "Repository: $MDS_REPO_URL"
-echo "Branch: $MDS_BRANCH"
-echo "Docker Image: $MDS_DOCKER_IMAGE"
+echo "Repository: $MARLIN_REPO_URL"
+echo "Branch: $MARLIN_BRANCH"
+echo "Docker Image: $MARLIN_DOCKER_IMAGE"
 
 # Test repository access
-git ls-remote "$MDS_REPO_URL"
+git ls-remote "$MARLIN_REPO_URL"
 ```
 
 ### Check Container Status
@@ -166,7 +166,7 @@ docker exec drone-1 bash -c "cd /root/mavsdk_drone_show && git remote -v"
 
 **Solution:** Use HTTPS instead:
 ```bash
-export MDS_REPO_URL="https://github.com/YOURORG/YOURREPO.git"
+export MARLIN_REPO_URL="https://github.com/YOURORG/YOURREPO.git"
 ```
 
 ### Problem: Docker Image Not Found
@@ -180,8 +180,8 @@ bash tools/build_custom_image.sh
 
 **Solution:** Check environment variables are set:
 ```bash
-echo $MDS_REPO_URL
-echo $MDS_BRANCH
+echo $MARLIN_REPO_URL
+echo $MARLIN_BRANCH
 ```
 
 ---
@@ -241,7 +241,7 @@ docker save drone-template:v3.1 | 7z a -si ~/drone-template_v3.7z
 
 ```bash
 # Set your custom image for future SITL deployments
-export MDS_DOCKER_IMAGE="drone-template:v3.1"
+export MARLIN_DOCKER_IMAGE="drone-template:v3.1"
 
 # NOW use create_dockers.sh for actual SITL drone operations
 # (This will properly generate hwid and configure each drone)

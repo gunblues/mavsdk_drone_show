@@ -15,7 +15,7 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # =============================================================================
-# REPOSITORY CONFIGURATION: Environment Variable Support (MDS v3.1+)
+# REPOSITORY CONFIGURATION: Environment Variable Support (MARLIN v3.1+)
 # =============================================================================
 # This hardware setup script now supports environment variable override for
 # advanced deployments while maintaining 100% backward compatibility.
@@ -27,8 +27,8 @@ IFS=$'\n\t'
 #
 # FOR ADVANCED USERS (Custom Forks):
 #   - Set environment variables before running this script:
-#     export MDS_REPO_URL="git@github.com:yourcompany/your-fork.git"
-#     export MDS_BRANCH="your-production-branch"
+#     export MARLIN_REPO_URL="git@github.com:yourcompany/your-fork.git"
+#     export MARLIN_BRANCH="your-production-branch"
 #   - Hardware will be deployed with your custom repository configuration
 #
 # EXAMPLES:
@@ -36,21 +36,21 @@ IFS=$'\n\t'
 #   bash raspberry_setup.sh -d 1
 #
 #   # Advanced usage with custom repository:
-#   export MDS_REPO_URL="git@github.com:company/fork.git"
-#   export MDS_BRANCH="production"
+#   export MARLIN_REPO_URL="git@github.com:company/fork.git"
+#   export MARLIN_BRANCH="production"
 #   bash raspberry_setup.sh -d 5 -k "your_netbird_key"
 #
 # ENVIRONMENT VARIABLES SUPPORTED:
-#   MDS_REPO_URL  - Git repository URL (SSH or HTTPS format)
-#   MDS_BRANCH    - Git branch name to checkout and use
+#   MARLIN_REPO_URL  - Git repository URL (SSH or HTTPS format)
+#   MARLIN_BRANCH    - Git branch name to checkout and use
 #
 # NOTE: Command line arguments --repo-url and --branch will override env vars
 # =============================================================================
 
 # Default Values (with environment variable override support)
-DEFAULT_BRANCH="${MDS_BRANCH:-main-candidate}"
+DEFAULT_BRANCH="${MARLIN_BRANCH:-main-candidate}"
 DEFAULT_MANAGEMENT_URL="https://nb1.joomtalk.ir"
-DEFAULT_REPO_URL="${MDS_REPO_URL:-git@github.com:alireza787b/mavsdk_drone_show.git}"
+DEFAULT_REPO_URL="${MARLIN_REPO_URL:-git@github.com:alireza787b/mavsdk_drone_show.git}"
 DEFAULT_SSH_KEY_PATH="$HOME/.ssh/id_rsa_git_deploy"
 REPO_DIR="$HOME/mavsdk_drone_show"
 
@@ -535,7 +535,7 @@ setup_python_venv() {
         sudo apt-get install -y python3
     fi
 
-    # Check Python version (MDS requires Python 3.11-3.13)
+    # Check Python version (MARLIN requires Python 3.11-3.13)
     echo "Checking Python version compatibility..."
     PYTHON_VERSION=$(python3 --version 2>&1 | awk '{print $2}')
     PYTHON_MAJOR=$(echo "$PYTHON_VERSION" | cut -d. -f1)
@@ -558,7 +558,7 @@ setup_python_venv() {
         exit 1
     elif [[ $PYTHON_MAJOR -eq 3 && $PYTHON_MINOR -gt 13 ]]; then
         echo "WARNING: Untested Python Version: $PYTHON_VERSION"
-        echo "  MDS has been tested with Python 3.11-3.13."
+        echo "  MARLIN has been tested with Python 3.11-3.13."
         echo "  Python 3.14+ may work but is not officially supported yet."
         read -p "  Continue anyway? (y/n): " continue_install
         if [[ "$continue_install" != "y" && "$continue_install" != "Y" ]]; then

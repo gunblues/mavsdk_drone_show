@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/license-PolyForm%20Dual-blue.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue.svg)](docs/guides/python-compatibility.md)
 
-MDS is a unified platform for PX4-based drone performances and intelligent swarm missions. Whether you want to run pre-planned, decentralized drone shows using SkyBrush outputs or orchestrate live, collaborative swarms with leader–follower clustering, MDS has you covered.
+MARLIN is a unified platform for PX4-based drone performances and intelligent swarm missions. Whether you want to run pre-planned, decentralized drone shows using SkyBrush outputs or orchestrate live, collaborative swarms with leader–follower clustering, MARLIN has you covered.
 
 ---
 
@@ -32,7 +32,7 @@ MDS is a unified platform for PX4-based drone performances and intelligent swarm
 
 ## Overview
 
-MDS 3 combines three core components into a single, cohesive package:
+MARLIN combines three core components into a single, cohesive package:
 
 ### 1. Drone Side
 - Runs on any Linux-based autopilot platform (Raspberry Pi, NVIDIA Jetson, or similar)
@@ -51,7 +51,7 @@ MDS 3 combines three core components into a single, cohesive package:
 - **3D Trajectory Planning** with interactive waypoints and terrain elevation
 - Supports both Drone-Show mode and Smart-Swarm mode
 
-**In short, MDS 3 is one package for:**
+**In short, MARLIN is one package for:**
 - **Offline Drone Shows**: Pre-planned, synchronized formations from SkyBrush CSV
 - **Smart Swarm Missions**: Decentralized leader–follower missions with robust failsafe handling
 
@@ -59,10 +59,10 @@ MDS 3 combines three core components into a single, cohesive package:
 
 ## Demo Videos
 
-### MDS 3 Complete Feature Showcase
+### MARLIN Complete Feature Showcase
 **3D Drone Swarms in Action | Mission Planning + Autonomous Clustered Formation**
 
-[![MDS 3 Complete Feature Showcase](https://img.youtube.com/vi/mta2ARQKWRQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=mta2ARQKWRQ)
+[![MARLIN Complete Feature Showcase](https://img.youtube.com/vi/mta2ARQKWRQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=mta2ARQKWRQ)
 
 ### 100-Drone SITL Test (Version 2)
 **Large-Scale Cloud Simulation**
@@ -119,7 +119,7 @@ MDS 3 combines three core components into a single, cohesive package:
 - Dynamic container creation scripts
 
 ### Mission Configuration Tools
-- SkyBrush CSV → MDS converter script
+- SkyBrush CSV → MARLIN converter script
 - JSON-based mission/formation files with validators
 - Parameter tuning utilities for leader election, Kalman filters, failsafe timeouts
 
@@ -129,13 +129,13 @@ MDS 3 combines three core components into a single, cohesive package:
 
 ### Python Requirements
 
-**MDS requires Python 3.11, 3.12, or 3.13.** The latest Raspberry Pi OS includes Python 3.13 and is fully supported.
+**MARLIN requires Python 3.11, 3.12, or 3.13.** The latest Raspberry Pi OS includes Python 3.13 and is fully supported.
 
 📖 See [Python Compatibility Guide](docs/guides/python-compatibility.md) for details and troubleshooting.
 
 ### Quick Start (SITL Demo)
 
-The fastest way to try MDS is with our SITL (Software-In-The-Loop) demo:
+The fastest way to try MARLIN is with our SITL (Software-In-The-Loop) demo:
 
 📖 **[SITL Demo Guide](docs/guides/sitl-comprehensive.md)** - Complete step-by-step setup
 
@@ -160,7 +160,7 @@ For custom repositories, production SITL deployments, or advanced scenarios:
 
 ### Real Hardware Deployment
 
-**⚠️ IMPORTANT:** Deploying MDS on real drones requires:
+**⚠️ IMPORTANT:** Deploying MARLIN on real drones requires:
 - Deep understanding of flight control systems and safety protocols
 - Aviation regulations compliance
 - Extensive testing in controlled environments
@@ -221,7 +221,7 @@ Major updates in this version:
 
 ## 🏢 Licensing & Commercial Use
 
-**MDS uses dual licensing to support everyone - from students to enterprises.**
+**MARLIN uses dual licensing to support everyone - from students to enterprises.**
 
 ### Free Licenses
 

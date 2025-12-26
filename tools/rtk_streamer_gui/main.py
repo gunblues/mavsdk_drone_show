@@ -207,7 +207,7 @@ class DroneConfig:
 class RTKStreamerGUI:
     def __init__(self, master):
         self.master = master
-        master.title("MDS RTK Streamer")
+        master.title("MARLIN RTK Streamer")
         self.stop_event = threading.Event()
         self.rtcm_queue = queue.Queue()
         self.serial_thread = None

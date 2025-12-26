@@ -78,7 +78,7 @@ Successfully implemented per-drone hardware configuration support by adding `ser
 
 **Considered Alternatives:**
 1. ❌ `.hwType` files + hardware_config.csv
-2. ❌ Environment variables (like MDS_REPO_URL)
+2. ❌ Environment variables (like MARLIN_REPO_URL)
 3. ❌ `.hwID` file content
 4. ✅ **config.csv columns (chosen)**
 

@@ -158,7 +158,7 @@ class LocalMavlinkController:
             self.log_info(f"🔄 Arming changed: {prev_armed} → {self.drone_config.is_armed}")
 
         # Special attention to custom modes - autopilot-specific handling
-        autopilot_type = os.environ.get('MDS_AUTOPILOT_TYPE', 'px4')
+        autopilot_type = os.environ.get('MARLIN_AUTOPILOT_TYPE', 'px4')
         if hasattr(self.drone_config, 'autopilot_type'):
             if self.drone_config.autopilot_type == mavutil.mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA:
                 autopilot_type = 'ardupilot'
@@ -252,7 +252,7 @@ class LocalMavlinkController:
         Supports both PX4 and ArduPilot autopilots.
         """
         # Check autopilot type from environment or detected value
-        autopilot_type = os.environ.get('MDS_AUTOPILOT_TYPE', 'px4')
+        autopilot_type = os.environ.get('MARLIN_AUTOPILOT_TYPE', 'px4')
 
         # Also check if we detected ArduPilot from HEARTBEAT
         if hasattr(self.drone_config, 'autopilot_type'):

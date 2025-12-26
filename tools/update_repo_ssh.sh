@@ -1,8 +1,8 @@
 #!/bin/bash
 #
-# update_repo_ssh.sh - Enhanced Git Sync for MDS Repository (FIXED VERSION)
+# update_repo_ssh.sh - Enhanced Git Sync for MARLIN Repository (FIXED VERSION)
 #
-# This script ensures that the drone's software repository (MDS) is
+# This script ensures that the drone's software repository (MARLIN) is
 # up-to-date before operations start. Enhanced for production swarm deployments.
 #
 # FIXED: Removed variable corruption issues and simplified configuration

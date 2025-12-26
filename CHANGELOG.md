@@ -93,7 +93,7 @@ and this project uses simple two-part versioning: `X.Y` (Major.Minor).
   - Moved implementation summaries to `docs/archives/implementation-summaries/`
   - Moved legacy docs (v2.0, HTML, PDF) to `docs/archives/`
   - Renamed and relocated current docs to new folder structure
-  - Dashboard README customized for MDS (was generic Create React App template)
+  - Dashboard README customized for MARLIN (was generic Create React App template)
 - **Dark Mode Fixes**:
   - Fixed unreadable metric boxes in ManageDroneShow page
   - Replaced MUI inline styles with CSS variables for theme compatibility

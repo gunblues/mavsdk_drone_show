@@ -76,10 +76,10 @@ COMBINED_VIEW=true
 USE_SITL=false
 USE_REAL=false
 OVERWRITE_IP=""
-# Repository Configuration: Environment Variable Support (MDS v3.1+)
+# Repository Configuration: Environment Variable Support (MARLIN v3.1+)
 # This script now supports custom branches via environment variables
 # Default behavior unchanged for normal users
-BRANCH_NAME="${MDS_BRANCH:-main-candidate}"
+BRANCH_NAME="${MARLIN_BRANCH:-main-candidate}"
 
 # Backend Selection: FastAPI (recommended) or Flask (legacy)
 # Options: fastapi, flask
@@ -122,7 +122,7 @@ NETWORK OPTIONS:
   --overwrite-ip <IP>   : Override server IP in environment
 
 REPOSITORY OPTIONS:
-  -b <branch>           : Specify git branch (default: from MDS_BRANCH env var or main-candidate)
+  -b <branch>           : Specify git branch (default: from MARLIN_BRANCH env var or main-candidate)
 
 HELP:
   -h                    : Display this help message

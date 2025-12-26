@@ -1,6 +1,6 @@
 # Versioning Guide
 
-**How MAVSDK Drone Show manages versions and releases**
+**How MARLIN manages versions and releases**
 
 ---
 
@@ -192,7 +192,7 @@ PR validation automatically checks commit messages. Invalid commits will be flag
 
 ## Version Numbering Scheme
 
-MDS uses **simple two-part versioning**: `X.Y`
+MARLIN uses **simple two-part versioning**: `X.Y`
 
 ### Format: `X.Y`
 
@@ -337,7 +337,7 @@ git commit -m "chore: bump version to 3.7"
 
 ## Release Workflow
 
-MDS uses a **two-branch release workflow**:
+MARLIN uses a **two-branch release workflow**:
 
 ### Branch Strategy
 

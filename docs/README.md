@@ -1,6 +1,6 @@
 # MAVSDK Drone Show Documentation
 
-**Complete documentation index for MDS 3.6**
+**Complete documentation index for MARLIN 3.6**
 
 Welcome to the MAVSDK Drone Show documentation! This index will help you find the right guide for your needs.
 
@@ -21,7 +21,7 @@ Welcome to the MAVSDK Drone Show documentation! This index will help you find th
 
 ## 🚀 Getting Started
 
-### New to MDS?
+### New to MARLIN?
 
 Start here to get your first drone show simulation running:
 
@@ -40,8 +40,8 @@ Start here to get your first drone show simulation running:
 
 | I want to... | Start with... |
 |--------------|---------------|
-| Try MDS quickly (SITL) | [Quick Start Guide](quickstart/sitl-demo.md) *(Coming Soon)* |
-| Understand MDS deeply (SITL) | [SITL Comprehensive Guide](guides/sitl-comprehensive.md) |
+| Try MARLIN quickly (SITL) | [Quick Start Guide](quickstart/sitl-demo.md) *(Coming Soon)* |
+| Understand MARLIN deeply (SITL) | [SITL Comprehensive Guide](guides/sitl-comprehensive.md) |
 | Deploy on real hardware | [Contact for assistance](../README.md#contact--contributions) |
 | Customize deployment | [Advanced SITL Guide](guides/advanced-sitl.md) |
 | Understand features | [Features Section](#-features) |
@@ -69,7 +69,7 @@ Start here to get your first drone show simulation running:
 
 ## ✨ Features
 
-Detailed documentation for MDS features:
+Detailed documentation for MARLIN features:
 
 | Feature | Description |
 |---------|-------------|
@@ -89,13 +89,13 @@ Detailed documentation for MDS features:
 
 ### Environment Variables
 
-MDS supports environment variable overrides for advanced configuration:
+MARLIN supports environment variable overrides for advanced configuration:
 
 | Variable | Purpose | Default |
 |----------|---------|---------|
-| `MDS_REPO_URL` | Custom git repository URL | Official repo |
-| `MDS_BRANCH` | Custom git branch | `main-candidate` |
-| `MDS_DOCKER_IMAGE` | Custom Docker image | Official image |
+| `MARLIN_REPO_URL` | Custom git repository URL | Official repo |
+| `MARLIN_BRANCH` | Custom git branch | `main-candidate` |
+| `MARLIN_DOCKER_IMAGE` | Custom Docker image | Official image |
 
 See [Advanced SITL Guide](guides/advanced-sitl.md) for usage examples.
 
@@ -140,7 +140,7 @@ See [Advanced SITL Guide](guides/advanced-sitl.md) for usage examples.
 
 ## 📦 Version Management
 
-Understanding how MDS manages versions:
+Understanding how MARLIN manages versions:
 
 **[Versioning Guide](VERSIONING.md)** - Complete versioning workflow
 

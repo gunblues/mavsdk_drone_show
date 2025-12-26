@@ -22,7 +22,7 @@ set -euo pipefail
 # =============================================================================
 
 # =============================================================================
-# REPOSITORY CONFIGURATION: Environment Variable Support (MDS v3.1+)
+# REPOSITORY CONFIGURATION: Environment Variable Support (MARLIN v3.1+)
 # =============================================================================
 # This script now supports environment variable override for advanced deployments
 # while maintaining 100% backward compatibility for normal users.
@@ -34,36 +34,36 @@ set -euo pipefail
 #
 # FOR ADVANCED USERS (Custom Forks):
 #   - Set environment variables on HOST before running create_dockers.sh:
-#     export MDS_REPO_URL="git@github.com:yourcompany/your-fork.git"
-#     export MDS_BRANCH="your-production-branch"
+#     export MARLIN_REPO_URL="git@github.com:yourcompany/your-fork.git"
+#     export MARLIN_BRANCH="your-production-branch"
 #   - Environment variables are automatically passed to containers
 #   - All containers will use your custom repository configuration
 #
 # EXAMPLES:
 #   # Use HTTPS URL (no SSH keys needed):
-#   export MDS_REPO_URL="https://github.com/company/fork.git"
-#   export MDS_BRANCH="production"
+#   export MARLIN_REPO_URL="https://github.com/company/fork.git"
+#   export MARLIN_BRANCH="production"
 #   bash create_dockers.sh 5
 #
 #   # Use SSH URL (requires SSH keys in Docker image):
-#   export MDS_REPO_URL="git@github.com:company/fork.git"
-#   export MDS_BRANCH="main"
+#   export MARLIN_REPO_URL="git@github.com:company/fork.git"
+#   export MARLIN_BRANCH="main"
 #   bash create_dockers.sh 10
 #
 # ENVIRONMENT VARIABLES SUPPORTED:
-#   MDS_REPO_URL  - Git repository URL (SSH or HTTPS format)
-#   MDS_BRANCH    - Git branch name to checkout and use
+#   MARLIN_REPO_URL  - Git repository URL (SSH or HTTPS format)
+#   MARLIN_BRANCH    - Git branch name to checkout and use
 #
 # NOTE: These variables are checked at container startup time
 # =============================================================================
 
 # GitHub Repository Details (with environment variable override support)
 DEFAULT_GIT_REMOTE="origin"
-DEFAULT_GIT_BRANCH="${MDS_BRANCH:-main-candidate}"
-GITHUB_REPO_URL="${MDS_REPO_URL:-https://github.com/alireza787b/mavsdk_drone_show.git}"
+DEFAULT_GIT_BRANCH="${MARLIN_BRANCH:-main-candidate}"
+GITHUB_REPO_URL="${MARLIN_REPO_URL:-https://github.com/alireza787b/mavsdk_drone_show.git}"
 
 # Autopilot type (from environment variable, default to px4 for backward compatibility)
-AUTOPILOT_TYPE="${MDS_AUTOPILOT_TYPE:-px4}"
+AUTOPILOT_TYPE="${MARLIN_AUTOPILOT_TYPE:-px4}"
 
 # Option to use global Python
 USE_GLOBAL_PYTHON=false  # Set to true to use global Python instead of venv

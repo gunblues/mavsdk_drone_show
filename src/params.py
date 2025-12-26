@@ -41,13 +41,13 @@ class Params:
     # Supports: 'px4' (default) or 'ardupilot'
     #
     # This is automatically set by create_dockers.sh --autopilot flag and passed
-    # to containers via MDS_AUTOPILOT_TYPE environment variable.
+    # to containers via MARLIN_AUTOPILOT_TYPE environment variable.
     #
     # Connection differences:
     #   PX4:       UDP port 14550
     #   ArduPilot: TCP port 5760 (instance N uses 5760 + N*10)
     # ===================================================================================
-    AUTOPILOT_TYPE = os.environ.get('MDS_AUTOPILOT_TYPE', 'px4')
+    AUTOPILOT_TYPE = os.environ.get('MARLIN_AUTOPILOT_TYPE', 'px4')
 
     # ArduPilot-specific SITL configuration
     ARDUPILOT_SITL_BASE_PORT = 5760      # Base TCP port for ArduPilot SITL
@@ -55,7 +55,7 @@ class Params:
 
     # Git Configuration
     # ===================================================================================
-    # REPOSITORY CONFIGURATION: Environment Variable Support (MDS v3.1+)
+    # REPOSITORY CONFIGURATION: Environment Variable Support (MARLIN v3.1+)
     # ===================================================================================
     # These settings now support environment variable override for advanced deployments
     # while maintaining 100% backward compatibility for normal users.
@@ -65,18 +65,18 @@ class Params:
     #   - Uses: git@github.com:alireza787b/mavsdk_drone_show.git@main-candidate
     #
     # FOR ADVANCED USERS (Custom Forks):
-    #   - Set environment variables before running any MDS scripts:
-    #     export MDS_REPO_URL="git@github.com:yourcompany/your-fork.git"
-    #     export MDS_BRANCH="your-production-branch"
+    #   - Set environment variables before running any MARLIN scripts:
+    #     export MARLIN_REPO_URL="git@github.com:yourcompany/your-fork.git"
+    #     export MARLIN_BRANCH="your-production-branch"
     #   - All Python components (GCS server, functions, etc.) automatically use your config
     #
     # ENVIRONMENT VARIABLES:
-    #   MDS_REPO_URL  - Git repository URL (SSH or HTTPS)
-    #   MDS_BRANCH    - Git branch name
+    #   MARLIN_REPO_URL  - Git repository URL (SSH or HTTPS)
+    #   MARLIN_BRANCH    - Git branch name
     # ===================================================================================
     GIT_AUTO_PUSH = True
-    GIT_REPO_URL = os.environ.get('MDS_REPO_URL', 'git@github.com:alireza787b/mavsdk_drone_show.git')
-    GIT_BRANCH = os.environ.get('MDS_BRANCH', 'main-candidate')
+    GIT_REPO_URL = os.environ.get('MARLIN_REPO_URL', 'git@github.com:alireza787b/mavsdk_drone_show.git')
+    GIT_BRANCH = os.environ.get('MARLIN_BRANCH', 'main-candidate')
 
     # ===================================================================================
     # GCS (Ground Control Station) CONFIGURATION

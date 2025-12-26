@@ -161,7 +161,7 @@ const SidebarMenu = ({ collapsed, onToggle }) => {
         <div className="footer-item social-links">
           {!isCollapsed ? (
             <div className="social-expanded">
-              <span className="copyright">© {new Date().getFullYear()} MDS by Alireza787b</span>
+              <span className="copyright">© {new Date().getFullYear()} MARLIN</span>
               <div className="social-icons">
                 <a href="https://github.com/alireza787b/mavsdk_drone_show" target="_blank" rel="noopener noreferrer">
                   <FaGithub />
