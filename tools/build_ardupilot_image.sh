@@ -37,13 +37,13 @@ SCRIPT_VERSION="1.0.0"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_DIR="$(dirname "$SCRIPT_DIR")"
 
-# Default values
+# Default values (with environment variable override support)
 BASE_IMAGE="ubuntu:22.04"
 OUTPUT_IMAGE="drone-template-ardupilot:latest"
 VEHICLE="ArduCopter"
 SSH_KEY_CONTENT="${MARLIN_SSH_KEY:-}"
-MARLIN_REPO_URL="git@github.com:valteq/marlin.git"
-MARLIN_BRANCH="main"
+MARLIN_REPO_URL="${MARLIN_REPO_URL:-git@github.com:valteq/marlin.git}"
+MARLIN_BRANCH="${MARLIN_BRANCH:-main}"
 
 # Colors for output
 RED='\033[0;31m'
@@ -78,6 +78,8 @@ Options:
 
 Environment Variables:
   MARLIN_SSH_KEY        SSH deploy key content (alternative to --ssh-key)
+  MARLIN_REPO_URL       Git repository URL (default: git@github.com:valteq/marlin.git)
+  MARLIN_BRANCH         Git branch to clone (default: main)
 
 Examples:
   export MARLIN_SSH_KEY="\$(cat ~/.ssh/marlin_deploy_key)"
