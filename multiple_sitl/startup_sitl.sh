@@ -541,7 +541,7 @@ calculate_new_coordinates() {
 export_env_vars() {
     if [[ "$AUTOPILOT_TYPE" == "ardupilot" ]]; then
         log_message "Exporting environment variables for ArduPilot SITL..."
-        # ArduPilot uses --home parameter instead of env vars, but we export for reference
+        # ArduPilot uses --custom-location parameter instead of env vars, but we export for reference
         export ARDUPILOT_HOME_LAT="$NEW_LAT"
         export ARDUPILOT_HOME_LON="$NEW_LON"
         export ARDUPILOT_HOME_ALT="$DEFAULT_ALT"
@@ -570,14 +570,14 @@ determine_simulation_command() {
 
         case $SIMULATION_MODE in
             g)
-                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --home=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --console --map"
+                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --console --map"
                 log_message "Simulation Mode: ArduPilot Graphics Enabled (TCP port $ARDUPILOT_PORT)"
                 ;;
             j)
                 log_message "JMAVSim not supported for ArduPilot. Using headless mode."
                 ;&  # Fall through to headless
             h|*)
-                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --home=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --no-mavproxy"
+                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --no-mavproxy"
                 log_message "Simulation Mode: ArduPilot Headless (TCP port $ARDUPILOT_PORT)"
                 ;;
         esac
