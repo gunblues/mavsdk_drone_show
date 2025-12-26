@@ -580,10 +580,11 @@ determine_simulation_command() {
                 log_message "JMAVSim not supported for ArduPilot. Using headless mode."
                 ;&  # Fall through to headless
             h|*)
-                # Run with mavproxy but daemon mode for UDP forwarding
+                # Run with mavproxy for UDP forwarding (no --daemon, that's not a valid option)
                 # mavproxy handles the TCP connection and forwards to UDP
-                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --out=udp:127.0.0.1:$UDP_OUT_PORT --daemon"
-                log_message "Simulation Mode: ArduPilot Headless with MAVProxy daemon (UDP to $UDP_OUT_PORT)"
+                # Use --no-rebuild to skip unnecessary compilation
+                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --out=udp:127.0.0.1:$UDP_OUT_PORT --no-rebuild"
+                log_message "Simulation Mode: ArduPilot Headless with MAVProxy (UDP to $UDP_OUT_PORT)"
                 ;;
         esac
     else
