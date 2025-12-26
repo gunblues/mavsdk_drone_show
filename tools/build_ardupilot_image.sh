@@ -216,6 +216,16 @@ docker exec "$TEMP_CONTAINER" bash -c '
     python3 -c "import sdnotify" && echo "sdnotify OK"
     python3 -c "import mavsdk" && echo "mavsdk OK"
 
+    # Install ArduPilot dependencies in venv as well (if venv exists)
+    # This is needed because startup_sitl.sh activates the venv before running sim_vehicle.py
+    echo "=== Installing ArduPilot dependencies in venv ==="
+    if [ -d /root/mavsdk_drone_show/venv ]; then
+        /root/mavsdk_drone_show/venv/bin/pip install pexpect pymavlink MAVProxy future empy==3.3.4
+        echo "Installed ArduPilot dependencies in venv"
+    else
+        echo "No venv found, skipping venv installation"
+    fi
+
     cd /root
 
     echo "=== Cloning ArduPilot repository ==="
