@@ -634,10 +634,9 @@ If you have questions about versioning or the release process:
 
 - Check [CHANGELOG.md](../CHANGELOG.md) for version history
 - Review [README.md](../README.md) for project overview
-- Contact: [p30planets@gmail.com](mailto:p30planets@gmail.com)
 
 ---
 
 **Document Version:** 1.0 (November 2025)
 
-© 2025 Alireza Ghaderi | Licensed under CC BY-NC-SA 4.0
+© 2025 Valtec
