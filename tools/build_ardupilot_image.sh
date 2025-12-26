@@ -196,7 +196,8 @@ docker exec "$TEMP_CONTAINER" bash -c '
         libxslt1-dev \
         bc \
         screen \
-        xterm || true
+        xterm \
+        vim || true
 
     echo "=== Installing Python dependencies for SITL ==="
     pip3 install --upgrade pip
