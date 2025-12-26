@@ -2,7 +2,7 @@
 
 ## Supported Python Versions
 
-MAVSDK Drone Show (MDS) supports the following Python versions:
+MARLIN supports the following Python versions:
 
 - ✅ **Python 3.11** (Recommended for stability)
 - ✅ **Python 3.12**

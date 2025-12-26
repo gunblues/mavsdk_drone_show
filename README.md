@@ -1,4 +1,4 @@
-# MAVSDK Drone Show (MDS)
+# MARLIN
 
 **All-in-One Drone Show & Smart Swarm Framework for PX4**
 

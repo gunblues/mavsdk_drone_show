@@ -2,7 +2,7 @@
 
 **Generated:** 2025-11-22
 **Analyst:** Senior Backend Architecture Review
-**Project:** MAVSDK Drone Show (MDS) v3.6
+**Project:** MARLIN v3.6
 **Current Framework:** Flask 3.0.3
 **Target Framework:** FastAPI
 
