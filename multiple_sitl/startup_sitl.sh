@@ -568,17 +568,20 @@ determine_simulation_command() {
         # Port offset: instance N uses port 5760 + (N * 10)
         local ARDUPILOT_PORT=$((5760 + INSTANCE * 10))
 
+        # UDP output port for mavlink-routerd (same as PX4 for compatibility)
+        local UDP_OUT_PORT=14550
+
         case $SIMULATION_MODE in
             g)
-                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --console --map"
-                log_message "Simulation Mode: ArduPilot Graphics Enabled (TCP port $ARDUPILOT_PORT)"
+                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --out=udp:127.0.0.1:$UDP_OUT_PORT --console --map"
+                log_message "Simulation Mode: ArduPilot Graphics Enabled (UDP output to $UDP_OUT_PORT)"
                 ;;
             j)
                 log_message "JMAVSim not supported for ArduPilot. Using headless mode."
                 ;&  # Fall through to headless
             h|*)
-                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --no-mavproxy"
-                log_message "Simulation Mode: ArduPilot Headless (TCP port $ARDUPILOT_PORT)"
+                SIMULATION_COMMAND="cd $ARDUPILOT_DIR/Tools/autotest && python3 sim_vehicle.py -v $ARDUPILOT_VEHICLE --custom-location=$HOME_LOCATION --sysid=$HWID -I $INSTANCE --out=udp:127.0.0.1:$UDP_OUT_PORT --no-mavproxy"
+                log_message "Simulation Mode: ArduPilot Headless (UDP output to $UDP_OUT_PORT)"
                 ;;
         esac
     else

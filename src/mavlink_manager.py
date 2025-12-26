@@ -15,17 +15,15 @@ class MavlinkManager:
             if self.params.sim_mode:
                 logging.info("Sim mode is enabled. Connecting to SITL...")
 
-                # Use autopilot-aware source selection
-                if self.params.AUTOPILOT_TYPE == 'ardupilot':
-                    # ArduPilot SITL: TCP connection to sim_vehicle.py
-                    mavlink_source = self.params.get_mavlink_router_source(hw_id)
-                    logging.info(f"ArduPilot SITL detected - using TCP source: {mavlink_source}")
+                # Both PX4 and ArduPilot SITL now use UDP output to port 14550
+                # ArduPilot uses --out=udp:127.0.0.1:14550 in sim_vehicle.py
+                # PX4 natively outputs to UDP 14550
+                if self.params.default_sitl:
+                    mavlink_source = f"0.0.0.0:{self.params.sitl_port}"
                 else:
-                    # PX4 SITL: UDP connection
-                    if self.params.default_sitl:
-                        mavlink_source = f"0.0.0.0:{self.params.sitl_port}"
-                    else:
-                        mavlink_source = f"0.0.0.0:{self.drone_config.config['mavlink_port']}"
+                    mavlink_source = f"0.0.0.0:{self.drone_config.config['mavlink_port']}"
+
+                logging.info(f"{self.params.AUTOPILOT_TYPE.upper()} SITL detected - using UDP source: {mavlink_source}")
             else:
                 if self.params.serial_mavlink:
                     logging.info("Real mode is enabled. Connecting to Pixhawk via serial...")
