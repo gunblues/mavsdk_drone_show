@@ -57,8 +57,14 @@ class MavlinkManager:
             else:
                 endpoints.append(f"-e {self.params.GCS_IP}:{int(self.drone_config.config['mavlink_port'])}")
 
+            # Build mavlink-routerd command
             # -t 0 disables TCP listening (prevents conflict with ArduPilot's TCP port 5760)
-            mavlink_router_cmd = "mavlink-routerd -t 0 " + ' '.join(endpoints) + ' ' + mavlink_source
+            if self.params.sim_mode and self.params.AUTOPILOT_TYPE == 'ardupilot':
+                # ArduPilot: Use -p for TCP client connection to SITL
+                mavlink_router_cmd = "mavlink-routerd -t 0 " + ' '.join(endpoints) + f" -p {mavlink_source}"
+            else:
+                # PX4/Real: Use UDP source
+                mavlink_router_cmd = "mavlink-routerd -t 0 " + ' '.join(endpoints) + ' ' + mavlink_source
             logging.info(f"Starting MAVLink router with command: {mavlink_router_cmd}")
 
             self.mavlink_router_process = subprocess.Popen(mavlink_router_cmd, shell=True)
