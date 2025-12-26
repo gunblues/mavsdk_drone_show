@@ -1,10 +1,9 @@
 #!/bin/bash
 
 echo "================================================================="
-echo "MAVSDK-Drone-Show Mavlink-router Installation Script"
-echo "Author: Alireza Ghaderi"
-echo "GitHub: https://github.com/alireza787b/mavsdk_drone_show"
-echo "Contact: p30planets@gmail.com"
+echo "MARLIN Mavlink-router Installation Script"
+echo "Author: MARLIN Team"
+echo "GitHub: https://github.com/valteq/marlin"
 echo "For more information, visit the GitHub Repo"
 echo "================================================================="
 

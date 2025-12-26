@@ -17,9 +17,6 @@ Usage examples:
 
     # Set LEDs to blue, indicating Git sync in progress:
     python led_controller.py --color blue
-
-Author: Alireza Ghaderi
-Date: 2025-03-02
 """
 
 import sys

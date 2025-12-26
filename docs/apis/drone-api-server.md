@@ -199,7 +199,7 @@ http://drone-ip:7070/openapi.json
   "author_email": "dev@example.com",
   "commit_date": "2025-11-22T10:30:00+00:00",
   "commit_message": "refactor: Migrate to FastAPI",
-  "remote_url": "git@github.com:alireza787b/mavsdk_drone_show.git",
+  "remote_url": "git@github.com:valteq/marlin.git",
   "tracking_branch": "origin/main-candidate",
   "status": "clean",
   "uncommitted_changes": []

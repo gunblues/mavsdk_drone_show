@@ -1,18 +1,12 @@
 # smart_swarm/smart_swarm.py
-# Copyright (c) 2025 Alireza Ghaderi
-# SPDX-License-Identifier: CC-BY-NC-SA-4.0
-#
-# This file is part of MAVSDK Drone Show
-# https://github.com/alireza787b/mavsdk_drone_show
-#
-# Licensed under Creative Commons Attribution-NonCommercial-ShareAlike 4.0
-# For commercial licensing, contact: p30planets@gmail.com
+# This file is part of MARLIN
+# https://github.com/valteq/marlin
 
 """
 ===========================================================================
- Project: MavSDK Drone Show (smart_swarm)
- Repository: https://github.com/alireza787b/mavsdk_drone_show
- 
+ Project: MARLIN (smart_swarm)
+ Repository: https://github.com/valteq/marlin
+
  Description:
    This project implements a smart swarm control system using MAVSDK, designed
    to operate drones in a coordinated formation. The system distinguishes
@@ -65,14 +59,8 @@
       - On termination, all periodic tasks and follower tasks are cleanly cancelled.
       - The MAVSDK server is properly shutdown.
 
- Developer & Contact Information:
-   - Author: Alireza Ghaderi
-   - GitHub: https://github.com/alireza787b
-   - LinkedIn: https://www.linkedin.com/in/alireza787b
-   - Email: p30planets@gmail.com
-
  Notes:
-   - The project is part of the "mavsdk_drone_show" repository.
+   - The project is part of the MARLIN repository.
    - Future improvements may include replacing the CSV-based configuration update with a
      direct query to a Ground Control Station (GCS) endpoint.
    - This file serves as the central orchestrator for the swarm behavior and leverages

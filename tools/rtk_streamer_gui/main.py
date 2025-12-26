@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """
-RTK Streamer GUI for MAVSDK Drone Shows
+RTK Streamer GUI for MARLIN
 
-Repository: https://github.com/alireza787b/mavsdk_drone_show
-Author: Alireza
-LinkedIn: https://www.linkedin.com/in/alireza787b/
+Repository: https://github.com/valteq/marlin
 
 This application provides a professional, Tkinter-based GUI for real-time
 streaming of RTCM3 correction data from a u-blox F9P base station to multiple
@@ -274,14 +272,14 @@ class RTKStreamerGUI:
         footer_font.configure(size=9)
         footer = ttk.Label(
             self.master,
-            text="© 2025 | GitHub: alireza787b/mavsdk_drone_show | @alireza787b",
+            text="© 2025 | GitHub: valteq/marlin",
             font=footer_font,
             foreground='gray',
             cursor="hand2"
         )
         footer.grid(row=4, column=0, pady=(5,5))
         footer.bind("<Button-1>", lambda e: webbrowser.open_new(
-            "https://github.com/alireza787b/mavsdk_drone_show"
+            "https://github.com/valteq/marlin"
         ))
 
     def _populate_table(self):

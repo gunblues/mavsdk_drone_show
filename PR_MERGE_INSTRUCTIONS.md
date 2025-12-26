@@ -65,14 +65,14 @@ git push -u origin claude/backend-review-polish-01NQ3abACnaVRDY1WgD7bKen
 Enumerating objects: XX, done.
 Counting objects: 100% (XX/XX), done.
 ...
-To github.com:alireza787b/mavsdk_drone_show.git
+To github.com:valteq/marlin.git
  * [new branch]      claude/backend-review-polish-01NQ3abACnaVRDY1WgD7bKen -> claude/backend-review-polish-01NQ3abACnaVRDY1WgD7bKen
 ```
 
 ### Step 2: Create Pull Request on GitHub
 
 1. **Navigate to Repository:**
-   - Go to: https://github.com/alireza787b/mavsdk_drone_show
+   - Go to: https://github.com/valteq/marlin
 
 2. **Initiate PR:**
    - Click "Pull requests" tab

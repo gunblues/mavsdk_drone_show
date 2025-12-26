@@ -22,7 +22,7 @@ IFS=$'\n\t'
 #
 # FOR NORMAL USERS (99%):
 #   - No action required - defaults work identically to previous versions
-#   - Uses: git@github.com:alireza787b/mavsdk_drone_show.git@main-candidate
+#   - Uses: git@github.com:valteq/marlin.git@main-candidate
 #   - Simply run: bash raspberry_setup.sh [options]
 #
 # FOR ADVANCED USERS (Custom Forks):
@@ -50,7 +50,7 @@ IFS=$'\n\t'
 # Default Values (with environment variable override support)
 DEFAULT_BRANCH="${MARLIN_BRANCH:-main-candidate}"
 DEFAULT_MANAGEMENT_URL="https://nb1.joomtalk.ir"
-DEFAULT_REPO_URL="${MARLIN_REPO_URL:-git@github.com:alireza787b/mavsdk_drone_show.git}"
+DEFAULT_REPO_URL="${MARLIN_REPO_URL:-git@github.com:valteq/marlin.git}"
 DEFAULT_SSH_KEY_PATH="$HOME/.ssh/id_rsa_git_deploy"
 REPO_DIR="$HOME/mavsdk_drone_show"
 
@@ -74,7 +74,7 @@ Options:
   -d, --drone-id ID           Specify Drone ID (e.g., 1, 2) [Required]
   -k, --netbird-key KEY       Specify Netbird Setup Key [Required unless --skip-netbird is used]
   -u, --management-url URL    Specify Netbird Management URL (default: https://nb1.joomtalk.ir)
-      --repo-url URL          Specify Git repository URL (default: git@github.com:alireza787b/mavsdk_drone_show.git)
+      --repo-url URL          Specify Git repository URL (default: git@github.com:valteq/marlin.git)
       --ssh-key-path PATH     Specify SSH private key path for GitHub access (default: ~/.ssh/id_rsa_git_deploy)
       --skip-netbird          Skip Netbird setup steps
       --skip-mavsdk           Skip MAVSDK server setup

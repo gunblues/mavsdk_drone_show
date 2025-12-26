@@ -14,17 +14,26 @@
 # Options:
 #   --output IMAGE        Output image name (default: drone-template-px4:latest)
 #   --branch BRANCH       PX4 branch to use (default: v1.14.3)
+#   --ssh-key "KEY"       SSH deploy key content for private MARLIN repo
+#   --marlin-branch NAME  MARLIN branch to clone (default: main)
 #   --help                Show this help message
 #
+# Environment Variables:
+#   MARLIN_SSH_KEY        SSH deploy key content (alternative to --ssh-key)
+#
 # Examples:
+#   # Using environment variable
+#   export MARLIN_SSH_KEY="$(cat ~/.ssh/marlin_deploy_key)"
 #   bash tools/build_px4_image.sh
-#   bash tools/build_px4_image.sh --output mycompany-px4:v1.0
+#
+#   # Using command line argument
+#   bash tools/build_px4_image.sh --ssh-key "$(cat ~/.ssh/marlin_deploy_key)"
 #
 # =============================================================================
 
 set -euo pipefail
 
-SCRIPT_VERSION="1.0.0"
+SCRIPT_VERSION="1.1.0"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_DIR="$(dirname "$SCRIPT_DIR")"
 
@@ -32,6 +41,9 @@ BASE_DIR="$(dirname "$SCRIPT_DIR")"
 BASE_IMAGE="ubuntu:22.04"
 OUTPUT_IMAGE="drone-template-px4:latest"
 PX4_BRANCH="v1.14.3"
+SSH_KEY_CONTENT="${MARLIN_SSH_KEY:-}"
+MARLIN_REPO_URL="git@github.com:valteq/marlin.git"
+MARLIN_BRANCH="main"
 
 # Colors for output
 RED='\033[0;31m'
@@ -60,11 +72,18 @@ Build PX4 Docker image for drone show SITL simulation.
 Options:
   --output IMAGE        Output image name (default: drone-template-px4:latest)
   --branch BRANCH       PX4 branch to use (default: v1.14.3)
+  --ssh-key "KEY"       SSH deploy key content for private MARLIN repo
+  --marlin-branch NAME  MARLIN branch to clone (default: main)
   --help                Show this help message
 
+Environment Variables:
+  MARLIN_SSH_KEY        SSH deploy key content (alternative to --ssh-key)
+
 Examples:
+  export MARLIN_SSH_KEY="\$(cat ~/.ssh/marlin_deploy_key)"
   $(basename "$0")
-  $(basename "$0") --output mycompany-px4:v1.0
+
+  $(basename "$0") --ssh-key "\$(cat ~/.ssh/marlin_deploy_key)"
 EOF
     exit 0
 }
@@ -80,6 +99,14 @@ while [[ $# -gt 0 ]]; do
             PX4_BRANCH="$2"
             shift 2
             ;;
+        --ssh-key)
+            SSH_KEY_CONTENT="$2"
+            shift 2
+            ;;
+        --marlin-branch)
+            MARLIN_BRANCH="$2"
+            shift 2
+            ;;
         --help|-h)
             usage
             ;;
@@ -90,6 +117,13 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Validate SSH key
+if [[ -z "$SSH_KEY_CONTENT" ]]; then
+    log_error "SSH deploy key is required."
+    log_error "Set MARLIN_SSH_KEY environment variable or use --ssh-key option"
+    exit 1
+fi
+
 echo "=============================================="
 echo " PX4 Docker Image Builder v${SCRIPT_VERSION}"
 echo "=============================================="
@@ -98,6 +132,9 @@ echo "Configuration:"
 echo "  Base Image: $BASE_IMAGE"
 echo "  Output Image: $OUTPUT_IMAGE"
 echo "  PX4 Branch: $PX4_BRANCH"
+echo "  MARLIN Repo: $MARLIN_REPO_URL"
+echo "  MARLIN Branch: $MARLIN_BRANCH"
+echo "  SSH Key: [PROVIDED]"
 echo ""
 
 # Check if Docker is available
@@ -122,6 +159,22 @@ cleanup() {
     docker rm -f "$TEMP_CONTAINER" 2>/dev/null || true
 }
 trap cleanup EXIT
+
+# Setup SSH key in container
+log_info "Setting up SSH deploy key in container..."
+docker exec "$TEMP_CONTAINER" mkdir -p /root/.ssh
+docker exec "$TEMP_CONTAINER" bash -c "cat > /root/.ssh/deploy_key << 'SSHKEYEOF'
+${SSH_KEY_CONTENT}
+SSHKEYEOF"
+docker exec "$TEMP_CONTAINER" chmod 600 /root/.ssh/deploy_key
+docker exec "$TEMP_CONTAINER" bash -c 'cat > /root/.ssh/config << EOF
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile /root/.ssh/deploy_key
+    StrictHostKeyChecking no
+EOF'
+docker exec "$TEMP_CONTAINER" chmod 600 /root/.ssh/config
 
 log_info "Installing PX4 and dependencies inside container... (this will take a while)"
 
@@ -160,7 +213,8 @@ docker exec "$TEMP_CONTAINER" bash -c "
         vim \\
         netcat-openbsd \\
         iputils-ping \\
-        net-tools
+        net-tools \\
+        openssh-client
 
     echo '=== Installing PX4 SITL dependencies ==='
     apt-get install -y \\
@@ -217,9 +271,10 @@ docker exec "$TEMP_CONTAINER" bash -c "
 
     cd /root
 
-    echo '=== Cloning mavsdk_drone_show repository ==='
-    git clone https://github.com/alireza787b/mavsdk_drone_show.git
+    echo '=== Cloning MARLIN repository ==='
+    git clone ${MARLIN_REPO_URL} mavsdk_drone_show
     cd mavsdk_drone_show
+    git checkout ${MARLIN_BRANCH}
 
     echo '=== Setting up Python virtual environment ==='
     python3 -m venv venv

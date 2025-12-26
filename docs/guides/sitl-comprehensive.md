@@ -152,7 +152,7 @@ YoAccess Portainer via the browser using your domain, IP address, or the reverse
 
 ```bash
 cd ~
-git clone https://github.com/alireza787b/mavsdk_drone_show
+git clone https://github.com/valteq/marlin
 cd mavsdk_drone_show
 git checkout main-candidate
 python3 -m venv venv

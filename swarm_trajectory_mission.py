@@ -3,10 +3,7 @@
 Swarm Trajectory Mission Script (`swarm_trajectory_mission.py`)
 
 ----------------------------------------
-Author: Alireza Ghaderi  
-Date: 2025-09-12
-Version: 1.0.0
-Based on: drone_show.py v2.6.0
+Version: 0.1
 ----------------------------------------
 
 Description:

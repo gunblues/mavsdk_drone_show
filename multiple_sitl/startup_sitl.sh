@@ -2,12 +2,10 @@
 
 # =============================================================================
 # Script Name: startup_sitl.sh
-# Description: Initializes and manages the SITL simulation for MAVSDK_Drone_Show.
+# Description: Initializes and manages the SITL simulation for MARLIN.
 #              Configures environment, updates repository, sets system IDs, synchronizes
 #              system time with NTP using an external script, and starts the SITL simulation
 #              along with coordinator.py and mavlink2rest.
-# Author: Alireza Ghaderi
-# Date: September 2024
 # =============================================================================
 
 # Exit immediately if a command exits with a non-zero status,
@@ -29,7 +27,7 @@ set -euo pipefail
 #
 # FOR NORMAL USERS (99%):
 #   - No action required - defaults work identically to previous versions
-#   - Uses: https://github.com/alireza787b/mavsdk_drone_show.git@main-candidate
+#   - Uses: https://github.com/valteq/marlin.git@main-candidate
 #   - Simply run: bash create_dockers.sh <number_of_drones>
 #
 # FOR ADVANCED USERS (Custom Forks):
@@ -60,7 +58,7 @@ set -euo pipefail
 # GitHub Repository Details (with environment variable override support)
 DEFAULT_GIT_REMOTE="origin"
 DEFAULT_GIT_BRANCH="${MARLIN_BRANCH:-main-candidate}"
-GITHUB_REPO_URL="${MARLIN_REPO_URL:-https://github.com/alireza787b/mavsdk_drone_show.git}"
+GITHUB_REPO_URL="${MARLIN_REPO_URL:-https://github.com/valteq/marlin.git}"
 
 # Autopilot type (from environment variable, default to px4 for backward compatibility)
 AUTOPILOT_TYPE="${MARLIN_AUTOPILOT_TYPE:-px4}"

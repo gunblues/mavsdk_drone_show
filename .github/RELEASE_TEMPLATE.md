@@ -53,7 +53,7 @@ git push origin v3.6
 
 ### 2. Create GitHub Release
 
-1. Go to: https://github.com/alireza787b/mavsdk_drone_show/releases/new
+1. Go to: https://github.com/valteq/marlin/releases/new
 2. Tag version: `v3.6`
 3. Target: `main`
 4. Release title: `Version 3.6`
@@ -100,7 +100,7 @@ Copy this template and fill in details from CHANGELOG.md:
 
 ```bash
 # Clone repository
-git clone https://github.com/alireza787b/mavsdk_drone_show.git
+git clone https://github.com/valteq/marlin.git
 cd mavsdk_drone_show
 
 # Checkout this version
@@ -131,15 +131,7 @@ Thanks to all contributors who helped make this release possible!
 
 ---
 
-## 🏢 Commercial Support
-
-For production deployments, custom features, or hardware implementation assistance:
-- Email: p30planets@gmail.com
-- LinkedIn: [Alireza Ghaderi](https://www.linkedin.com/in/alireza787b/)
-
----
-
-**Full Changelog**: https://github.com/alireza787b/mavsdk_drone_show/blob/main/CHANGELOG.md
+**Full Changelog**: https://github.com/valteq/marlin/blob/main/CHANGELOG.md
 ```
 
 ---

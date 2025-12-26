@@ -37,7 +37,7 @@ set -euo pipefail
 #
 # FOR NORMAL USERS (99%):
 #   - No action required - defaults work identically to previous versions
-#   - Uses: https://github.com/alireza787b/mavsdk_drone_show.git
+#   - Uses: https://github.com/valteq/marlin.git
 #   - Simply run: bash update_repo_https.sh [branch]
 #
 # FOR ADVANCED USERS (Custom Forks):
@@ -60,7 +60,7 @@ set -euo pipefail
 
 # Configuration variables (with environment variable override support)
 REPO_DIR="${HOME}/mavsdk_drone_show"        # Modify this path as needed
-GIT_URL="${MARLIN_REPO_URL:-https://github.com/alireza787b/mavsdk_drone_show.git}"  # HTTPS URL for the repo
+GIT_URL="${MARLIN_REPO_URL:-https://github.com/valteq/marlin.git}"  # HTTPS URL for the repo
 LOG_FILE="${REPO_DIR}/update_repo.log"
 
 # Maximum number of retries for network operations

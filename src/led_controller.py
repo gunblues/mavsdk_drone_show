@@ -17,7 +17,7 @@ from src.params import Params
 #   - Move LED config to per-board profiles in params.py
 #   - Support multiple LED controllers (WS2812, APA102, etc.)
 #   - Add board capability detection and validation
-#   - See: https://github.com/alireza787b/mavsdk_drone_show/issues/XXX
+#   - See: https://github.com/valteq/marlin/issues/XXX
 #
 # ===================================================================================
 

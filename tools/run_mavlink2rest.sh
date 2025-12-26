@@ -14,9 +14,6 @@
 #   ./run_mavlink2rest.sh "udpin:0.0.0.0:14550" "0.0.0.0:8088"
 #
 # If parameters are not provided, default values will be used.
-#
-# Author: Alireza Ghaderi
-# Date: February 2025
 # =============================================================================
 
 # Default Configuration

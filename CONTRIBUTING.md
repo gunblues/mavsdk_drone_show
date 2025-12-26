@@ -85,7 +85,7 @@ We welcome:
 
 2. **Add upstream remote**
    ```bash
-   git remote add upstream https://github.com/alireza787b/mavsdk_drone_show.git
+   git remote add upstream https://github.com/valteq/marlin.git
    ```
 
 3. **Create a branch**
@@ -371,8 +371,6 @@ If your changes affect version numbers:
 
 - **Documentation:** Start with [docs/README.md](docs/README.md)
 - **GitHub Issues:** Search existing issues or create new one
-- **Email:** p30planets@gmail.com
-- **LinkedIn:** [Alireza Ghaderi](https://www.linkedin.com/in/alireza787b/)
 
 ### Response Time
 
@@ -400,7 +398,3 @@ By contributing, you agree that your contributions will be licensed under the sa
 **Thank you for contributing to MAVSDK Drone Show!** 🚁
 
 Your contributions help make drone swarm technology more accessible and robust for everyone.
-
----
-
-© 2025 Alireza Ghaderi | Licensed under CC BY-NC-SA 4.0

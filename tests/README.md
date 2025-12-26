@@ -343,7 +343,7 @@ pip install pytest-asyncio
 
 ## Support
 
-**Issues:** Report test failures at [GitHub Issues](https://github.com/alireza787b/mavsdk_drone_show/issues)
+**Issues:** Report test failures at [GitHub Issues](https://github.com/valteq/marlin/issues)
 
 **Questions:** See main project `/help`
 

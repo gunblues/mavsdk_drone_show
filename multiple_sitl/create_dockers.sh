@@ -16,7 +16,7 @@ cat << "EOF"
 
 EOF
 
-echo "Project: mavsdk_drone_show (alireza787b/mavsdk_drone_show)"
+echo "Project: MARLIN (valteq/marlin)"
 echo "Version: 1.4 (November 2024)"
 echo
 echo "This script creates and configures multiple Docker container instances for the drone show simulation."
@@ -60,7 +60,7 @@ echo
 #
 # FOR NORMAL USERS (99%):
 #   - No action required - uses default drone-template:latest image
-#   - Uses: git@github.com:alireza787b/mavsdk_drone_show.git@main-candidate
+#   - Uses: git@github.com:valteq/marlin.git@main-candidate
 #   - Simply run: bash create_dockers.sh <number_of_drones>
 #
 # FOR ADVANCED USERS (Custom Docker Images & Repositories):

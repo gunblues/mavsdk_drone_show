@@ -108,7 +108,7 @@ def categorize_commits(commits):
             entry = f"- **{scope}**: {description}"
 
         # Add commit hash reference
-        entry += f" ([`{commit['hash']}`](https://github.com/alireza787b/mavsdk_drone_show/commit/{commit['hash']}))"
+        entry += f" ([`{commit['hash']}`](https://github.com/valteq/marlin/commit/{commit['hash']}))"
 
         if is_breaking:
             categories['breaking'].append(entry)
@@ -145,7 +145,7 @@ def generate_release_notes():
 
 ## Changes
 
-No conventional commits found. See [commit history](https://github.com/alireza787b/mavsdk_drone_show/commits/main) for details.
+No conventional commits found. See [commit history](https://github.com/valteq/marlin/commits/main) for details.
 
 ---
 
@@ -227,20 +227,20 @@ No conventional commits found. See [commit history](https://github.com/alireza78
     notes.append("## 📥 Installation")
     notes.append("")
     notes.append("```bash")
-    notes.append("git clone https://github.com/alireza787b/mavsdk_drone_show.git")
+    notes.append("git clone https://github.com/valteq/marlin.git")
     notes.append("cd mavsdk_drone_show")
     notes.append("# Follow docs/sitl_demo_docker.md for Docker setup")
     notes.append("```")
     notes.append("")
     notes.append("## 📚 Documentation")
     notes.append("")
-    notes.append("- [Documentation](https://github.com/alireza787b/mavsdk_drone_show/tree/main/docs)")
-    notes.append("- [CHANGELOG](https://github.com/alireza787b/mavsdk_drone_show/blob/main/CHANGELOG.md)")
-    notes.append("- [Contributing Guide](https://github.com/alireza787b/mavsdk_drone_show/blob/main/CONTRIBUTING.md)")
+    notes.append("- [Documentation](https://github.com/valteq/marlin/tree/main/docs)")
+    notes.append("- [CHANGELOG](https://github.com/valteq/marlin/blob/main/CHANGELOG.md)")
+    notes.append("- [Contributing Guide](https://github.com/valteq/marlin/blob/main/CONTRIBUTING.md)")
     notes.append("")
     notes.append("---")
     notes.append("")
-    notes.append(f"**Full Changelog**: [View all changes](https://github.com/alireza787b/mavsdk_drone_show/compare/v{version}...v{version})")
+    notes.append(f"**Full Changelog**: [View all changes](https://github.com/valteq/marlin/compare/v{version}...v{version})")
     notes.append("")
     notes.append("🤖 *Auto-generated release notes*")
 

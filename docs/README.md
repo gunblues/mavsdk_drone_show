@@ -234,5 +234,3 @@ Please submit a pull request or open an issue on GitHub.
 ---
 
 **Last Updated:** December 2025 (Version 0.1)
-
-© 2025 Alireza Ghaderi | Licensed under CC BY-SA 4.0

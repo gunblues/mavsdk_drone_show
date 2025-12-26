@@ -1,9 +1,6 @@
-# MAVSDK Drone Show - Third-Party Licenses and Attributions
+# MARLIN - Third-Party Licenses and Attributions
 
-This file contains required notices and attributions for third-party software included in or used by MAVSDK Drone Show.
-
-© 2025 Alireza Ghaderi
-Licensed under CC BY-NC-SA 4.0 for non-commercial use
+This file contains required notices and attributions for third-party software included in or used by MARLIN.
 
 ---
 
@@ -222,13 +219,10 @@ This NOTICE file is updated when significant third-party dependencies are added 
 
 ## Questions?
 
-If you have questions about third-party licenses or need clarification about license compatibility:
-
-**Contact:** p30planets@gmail.com
+If you have questions about third-party licenses or need clarification about license compatibility,
+please open an issue on GitHub.
 
 ---
 
-**Last Updated:** November 2025
-**Project Version:** 3.6
-
-© 2025 Alireza Ghaderi
+**Last Updated:** December 2025
+**Project Version:** 0.1

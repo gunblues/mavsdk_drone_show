@@ -42,7 +42,7 @@ SCRIPT_VERSION="1.0.0"
 # 2. Command line arguments (highest priority)
 # 3. Default values (fallback)
 
-DEFAULT_REPO_URL="${MARLIN_REPO_URL:-git@github.com:alireza787b/mavsdk_drone_show.git}"
+DEFAULT_REPO_URL="${MARLIN_REPO_URL:-git@github.com:valteq/marlin.git}"
 DEFAULT_BRANCH="${MARLIN_BRANCH:-main-candidate}"
 DEFAULT_IMAGE_NAME="${MARLIN_DOCKER_IMAGE:-drone-template:custom}"
 BASE_IMAGE="drone-template:latest"

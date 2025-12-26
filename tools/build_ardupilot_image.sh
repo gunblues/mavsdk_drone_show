@@ -6,28 +6,28 @@
 # Date: December 2025
 # =============================================================================
 #
-# This script builds a Docker image with ArduPilot SITL installed, based on
-# the existing drone-template image or a fresh Ubuntu 22.04 base.
+# This script builds a Docker image with ArduPilot SITL installed from scratch.
 #
 # Usage:
 #   bash tools/build_ardupilot_image.sh [OPTIONS]
 #
 # Options:
-#   --base IMAGE          Base Docker image (default: drone-template:latest or ubuntu:22.04)
 #   --output IMAGE        Output image name (default: drone-template-ardupilot:latest)
-#   --from-scratch        Build from ubuntu:22.04 instead of drone-template
 #   --vehicle VEHICLE     ArduPilot vehicle type (default: ArduCopter)
+#   --ssh-key "KEY"       SSH deploy key content for private MARLIN repo
+#   --marlin-branch NAME  MARLIN branch to clone (default: main)
 #   --help                Show this help message
 #
+# Environment Variables:
+#   MARLIN_SSH_KEY        SSH deploy key content (alternative to --ssh-key)
+#
 # Examples:
-#   # Build from existing drone-template (faster, includes mavsdk_drone_show)
+#   # Using environment variable
+#   export MARLIN_SSH_KEY="$(cat ~/.ssh/marlin_deploy_key)"
 #   bash tools/build_ardupilot_image.sh
 #
-#   # Build from scratch (includes everything)
-#   bash tools/build_ardupilot_image.sh --from-scratch
-#
-#   # Custom output image name
-#   bash tools/build_ardupilot_image.sh --output mycompany-ardupilot:v1.0
+#   # Using command line argument
+#   bash tools/build_ardupilot_image.sh --ssh-key "$(cat ~/.ssh/marlin_deploy_key)"
 #
 # =============================================================================
 
@@ -38,10 +38,12 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BASE_DIR="$(dirname "$SCRIPT_DIR")"
 
 # Default values
-BASE_IMAGE="drone-template:latest"
+BASE_IMAGE="ubuntu:22.04"
 OUTPUT_IMAGE="drone-template-ardupilot:latest"
-FROM_SCRATCH=false
 VEHICLE="ArduCopter"
+SSH_KEY_CONTENT="${MARLIN_SSH_KEY:-}"
+MARLIN_REPO_URL="git@github.com:valteq/marlin.git"
+MARLIN_BRANCH="main"
 
 # Colors for output
 RED='\033[0;31m'
@@ -68,16 +70,20 @@ Usage: $(basename "$0") [OPTIONS]
 Build ArduPilot Docker image for drone show SITL simulation.
 
 Options:
-  --base IMAGE          Base Docker image (default: drone-template:latest)
   --output IMAGE        Output image name (default: drone-template-ardupilot:latest)
-  --from-scratch        Build from ubuntu:22.04 instead of drone-template
   --vehicle VEHICLE     ArduPilot vehicle type (default: ArduCopter)
+  --ssh-key "KEY"       SSH deploy key content for private MARLIN repo
+  --marlin-branch NAME  MARLIN branch to clone (default: main)
   --help                Show this help message
 
+Environment Variables:
+  MARLIN_SSH_KEY        SSH deploy key content (alternative to --ssh-key)
+
 Examples:
+  export MARLIN_SSH_KEY="\$(cat ~/.ssh/marlin_deploy_key)"
   $(basename "$0")
-  $(basename "$0") --from-scratch
-  $(basename "$0") --output mycompany-ardupilot:v1.0
+
+  $(basename "$0") --ssh-key "\$(cat ~/.ssh/marlin_deploy_key)"
 EOF
     exit 0
 }
@@ -85,21 +91,20 @@ EOF
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --base)
-            BASE_IMAGE="$2"
-            shift 2
-            ;;
         --output)
             OUTPUT_IMAGE="$2"
             shift 2
             ;;
-        --from-scratch)
-            FROM_SCRATCH=true
-            BASE_IMAGE="ubuntu:22.04"
-            shift
-            ;;
         --vehicle)
             VEHICLE="$2"
+            shift 2
+            ;;
+        --ssh-key)
+            SSH_KEY_CONTENT="$2"
+            shift 2
+            ;;
+        --marlin-branch)
+            MARLIN_BRANCH="$2"
             shift 2
             ;;
         --help|-h)
@@ -112,6 +117,13 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# Validate SSH key
+if [[ -z "$SSH_KEY_CONTENT" ]]; then
+    log_error "SSH deploy key is required."
+    log_error "Set MARLIN_SSH_KEY environment variable or use --ssh-key option"
+    exit 1
+fi
+
 echo "=============================================="
 echo " ArduPilot Docker Image Builder v${SCRIPT_VERSION}"
 echo "=============================================="
@@ -119,8 +131,10 @@ echo ""
 echo "Configuration:"
 echo "  Base Image: $BASE_IMAGE"
 echo "  Output Image: $OUTPUT_IMAGE"
-echo "  From Scratch: $FROM_SCRATCH"
 echo "  Vehicle: $VEHICLE"
+echo "  MARLIN Repo: $MARLIN_REPO_URL"
+echo "  MARLIN Branch: $MARLIN_BRANCH"
+echo "  SSH Key: [PROVIDED]"
 echo ""
 
 # Check if Docker is available
@@ -129,16 +143,9 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 
-# Check if base image exists
-if ! docker image inspect "$BASE_IMAGE" &> /dev/null; then
-    if [ "$FROM_SCRATCH" = true ]; then
-        log_info "Pulling base image: $BASE_IMAGE"
-        docker pull "$BASE_IMAGE"
-    else
-        log_error "Base image '$BASE_IMAGE' not found. Use --from-scratch to build from ubuntu:22.04"
-        exit 1
-    fi
-fi
+# Pull base image
+log_info "Pulling base image: $BASE_IMAGE"
+docker pull "$BASE_IMAGE"
 
 # Create temporary container name
 TEMP_CONTAINER="ardupilot-build-$(date +%s)"
@@ -153,118 +160,137 @@ cleanup() {
 }
 trap cleanup EXIT
 
-log_info "Installing ArduPilot and dependencies inside container..."
+# Setup SSH key in container
+log_info "Setting up SSH deploy key in container..."
+docker exec "$TEMP_CONTAINER" mkdir -p /root/.ssh
+docker exec "$TEMP_CONTAINER" bash -c "cat > /root/.ssh/deploy_key << 'SSHKEYEOF'
+${SSH_KEY_CONTENT}
+SSHKEYEOF"
+docker exec "$TEMP_CONTAINER" chmod 600 /root/.ssh/deploy_key
+docker exec "$TEMP_CONTAINER" bash -c 'cat > /root/.ssh/config << EOF
+Host github.com
+    HostName github.com
+    User git
+    IdentityFile /root/.ssh/deploy_key
+    StrictHostKeyChecking no
+EOF'
+docker exec "$TEMP_CONTAINER" chmod 600 /root/.ssh/config
+
+log_info "Installing ArduPilot and dependencies inside container... (this will take a while)"
 
 # Install ArduPilot inside the container
-docker exec "$TEMP_CONTAINER" bash -c '
+docker exec "$TEMP_CONTAINER" bash -c "
     set -e
 
     export DEBIAN_FRONTEND=noninteractive
 
-    echo "=== Updating package lists ==="
+    echo '=== Updating package lists ==='
     apt-get update
 
-    echo "=== Installing ArduPilot SITL dependencies ==="
-    # These are the dependencies needed for ArduPilot SITL (manually listed since install-prereqs refuses root)
-    apt-get install -y \
-        git \
-        python3 \
-        python3-pip \
-        python3-dev \
-        python3-venv \
-        python3-numpy \
-        python3-matplotlib \
-        python3-serial \
-        python3-opencv \
-        python3-wxgtk4.0 \
-        python3-lxml \
-        python3-scipy \
-        wget \
-        curl \
-        sudo \
-        lsb-release \
-        software-properties-common \
-        build-essential \
-        ccache \
-        gawk \
-        g++ \
-        gcc \
-        make \
-        cmake \
-        libtool \
-        libxml2-dev \
-        libxslt1-dev \
-        bc \
-        screen \
-        xterm \
-        vim || true
+    echo '=== Installing ArduPilot SITL dependencies ==='
+    apt-get install -y \\
+        git \\
+        python3 \\
+        python3-pip \\
+        python3-dev \\
+        python3-venv \\
+        python3-numpy \\
+        python3-matplotlib \\
+        python3-serial \\
+        python3-opencv \\
+        python3-wxgtk4.0 \\
+        python3-lxml \\
+        python3-scipy \\
+        wget \\
+        curl \\
+        sudo \\
+        lsb-release \\
+        software-properties-common \\
+        build-essential \\
+        ccache \\
+        gawk \\
+        g++ \\
+        gcc \\
+        make \\
+        cmake \\
+        libtool \\
+        libxml2-dev \\
+        libxslt1-dev \\
+        bc \\
+        screen \\
+        xterm \\
+        vim \\
+        openssh-client || true
 
-    echo "=== Installing Python dependencies for SITL ==="
+    echo '=== Installing Python dependencies for SITL ==='
     pip3 install --upgrade pip
     pip3 install pexpect future pymavlink MAVProxy empy==3.3.4 dronecan packaging
 
-    echo "=== Installing mavsdk_drone_show Python dependencies ==="
-    # Always install key dependencies first
-    pip3 install mavsdk grpcio grpcio-tools aiohttp fastapi uvicorn sdnotify pyserial requests
-
-    # Then install from requirements.txt if available
-    if [ -f /root/mavsdk_drone_show/requirements.txt ]; then
-        pip3 install -r /root/mavsdk_drone_show/requirements.txt
-    fi
-
-    # Verify critical packages are installed
-    echo "=== Verifying Python packages ==="
-    python3 -c "import sdnotify" && echo "sdnotify OK"
-    python3 -c "import mavsdk" && echo "mavsdk OK"
-
-    # Install ArduPilot dependencies in venv as well (if venv exists)
-    # This is needed because startup_sitl.sh activates the venv before running sim_vehicle.py
-    echo "=== Installing ArduPilot dependencies in venv ==="
-    if [ -d /root/mavsdk_drone_show/venv ]; then
-        /root/mavsdk_drone_show/venv/bin/pip install pexpect pymavlink MAVProxy future empy==3.3.4
-        echo "Installed ArduPilot dependencies in venv"
-    else
-        echo "No venv found, skipping venv installation"
-    fi
+    echo '=== Installing mavsdk and project dependencies ==='
+    pip3 install \\
+        mavsdk \\
+        grpcio \\
+        grpcio-tools \\
+        aiohttp \\
+        fastapi \\
+        uvicorn \\
+        sdnotify \\
+        pyserial \\
+        requests
 
     cd /root
 
-    echo "=== Cloning ArduPilot repository ==="
-    if [ ! -d "ardupilot" ]; then
-        git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git
-    else
-        echo "ArduPilot already exists, updating..."
-        cd ardupilot
-        git pull
-        git submodule update --init --recursive
-        cd ..
-    fi
+    echo '=== Cloning MARLIN repository ==='
+    git clone ${MARLIN_REPO_URL} mavsdk_drone_show
+    cd mavsdk_drone_show
+    git checkout ${MARLIN_BRANCH}
 
+    echo '=== Setting up Python virtual environment ==='
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install --upgrade pip
+    pip install -r requirements.txt
+    deactivate
+
+    # Install ArduPilot dependencies in venv
+    echo '=== Installing ArduPilot dependencies in venv ==='
+    /root/mavsdk_drone_show/venv/bin/pip install pexpect pymavlink MAVProxy future empy==3.3.4
+
+    cd /root
+
+    echo '=== Cloning ArduPilot repository ==='
+    git clone --recurse-submodules https://github.com/ArduPilot/ardupilot.git
     cd ardupilot
 
-    echo "=== Building ArduCopter SITL ==="
+    echo '=== Building ArduCopter SITL ==='
     ./waf configure --board sitl
     ./waf copter
 
-    echo "=== Adding sim_vehicle.py to PATH ==="
-    echo "export PATH=\$PATH:/root/ardupilot/Tools/autotest" >> /root/.bashrc
-    echo "export PATH=\$PATH:/root/ardupilot/Tools/autotest" >> /root/.profile
+    echo '=== Adding sim_vehicle.py to PATH ==='
+    echo 'export PATH=\$PATH:/root/ardupilot/Tools/autotest' >> /root/.bashrc
+    echo 'export PATH=\$PATH:/root/ardupilot/Tools/autotest' >> /root/.profile
 
-    echo "=== Verifying installation ==="
+    echo '=== Verifying installation ==='
     ls -la /root/ardupilot/Tools/autotest/sim_vehicle.py
-    python3 -c "import pexpect; print(\"pexpect OK\")"
-    python3 -c "import pymavlink; print(\"pymavlink OK\")"
+    python3 -c 'import pexpect; print(\"pexpect OK\")'
+    python3 -c 'import pymavlink; print(\"pymavlink OK\")'
+    python3 -c 'import mavsdk; print(\"mavsdk OK\")'
+    python3 -c 'import sdnotify; print(\"sdnotify OK\")'
 
-    echo "=== Cleaning up to reduce image size ==="
+    echo '=== Cleaning up to reduce image size ==='
     apt-get clean
     rm -rf /var/lib/apt/lists/*
     rm -rf /root/.cache/pip/*
 
-    echo "=== ArduPilot installation complete ==="
-'
+    echo '=== ArduPilot installation complete ==='
+"
 
 log_info "Committing container to image: $OUTPUT_IMAGE"
 docker commit -m "ArduPilot SITL image for drone show simulation" "$TEMP_CONTAINER" "$OUTPUT_IMAGE"
+
+# Also tag as drone-template:latest for compatibility
+log_info "Tagging as drone-template:latest"
+docker tag "$OUTPUT_IMAGE" drone-template:latest
 
 # Remove the trap since we're about to clean up manually
 trap - EXIT
@@ -274,7 +300,9 @@ log_info "=============================================="
 log_info " ArduPilot Docker image created successfully!"
 log_info "=============================================="
 echo ""
-echo "Image: $OUTPUT_IMAGE"
+echo "Images created:"
+echo "  - $OUTPUT_IMAGE"
+echo "  - drone-template:latest"
 echo ""
 echo "Usage with create_dockers.sh:"
 echo "  bash multiple_sitl/create_dockers.sh 5 --autopilot ardupilot"

@@ -127,15 +127,41 @@ This guide covers:
 
 #### Building Docker Images
 
+The build scripts require an SSH deploy key to clone the private repository.
+
+**Setup Deploy Key:**
+
+1. Get your deploy key from your team or generate a new one following [GitHub Deploy Keys](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys#deploy-keys)
+
+2. Create the key file:
+   ```bash
+   nano ~/.ssh/marlin_deploy_key
+   ```
+
+3. Paste your deploy key content (the entire private key including the header and footer):
+   ```
+   -----BEGIN OPENSSH PRIVATE KEY-----
+   b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAA...
+   ...
+   -----END OPENSSH PRIVATE KEY-----
+   ```
+
+4. Save the file and set correct permissions:
+   ```bash
+   chmod 600 ~/.ssh/marlin_deploy_key
+   ```
+
+**Build Images:**
+
 ```bash
-# Build PX4 image
+# Using environment variable
+export MARLIN_SSH_KEY="$(cat ~/.ssh/marlin_deploy_key)"
 bash tools/build_px4_image.sh
-
-# Build ArduPilot image (from scratch)
-bash tools/build_ardupilot_image.sh --from-scratch
-
-# Or build ArduPilot on top of PX4 image (faster)
 bash tools/build_ardupilot_image.sh
+
+# Using command line argument
+bash tools/build_px4_image.sh --ssh-key "$(cat ~/.ssh/marlin_deploy_key)"
+bash tools/build_ardupilot_image.sh --ssh-key "$(cat ~/.ssh/marlin_deploy_key)"
 ```
 
 #### Creating Drone Containers

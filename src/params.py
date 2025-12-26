@@ -62,7 +62,7 @@ class Params:
     #
     # FOR NORMAL USERS (99%):
     #   - No action required - defaults work identically to previous versions
-    #   - Uses: git@github.com:alireza787b/mavsdk_drone_show.git@main-candidate
+    #   - Uses: git@github.com:valteq/marlin.git@main-candidate
     #
     # FOR ADVANCED USERS (Custom Forks):
     #   - Set environment variables before running any MARLIN scripts:
@@ -75,7 +75,7 @@ class Params:
     #   MARLIN_BRANCH    - Git branch name
     # ===================================================================================
     GIT_AUTO_PUSH = True
-    GIT_REPO_URL = os.environ.get('MARLIN_REPO_URL', 'git@github.com:alireza787b/mavsdk_drone_show.git')
+    GIT_REPO_URL = os.environ.get('MARLIN_REPO_URL', 'git@github.com:valteq/marlin.git')
     GIT_BRANCH = os.environ.get('MARLIN_BRANCH', 'main-candidate')
 
     # ===================================================================================
